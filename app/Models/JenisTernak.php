@@ -17,3 +17,5 @@ class JenisTernak extends Model
         'kategori',
     ];
 }
+
+

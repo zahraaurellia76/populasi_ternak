@@ -9,6 +9,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\JenisTernakController;
 
+use App\Http\Controllers\Admin\PrediksiController;
+
+
 // Halaman Publik
 Route::get('/', [PublicController::class, 'index'])->name('public.index');
 
@@ -73,4 +76,9 @@ Route::middleware(['auth'])->group(function () {
     // Route Export Rekapitulasi Admin Kecamatan
     Route::get('/admin-kecamatan/rekapitulasi/pdf', [KecamatanController::class, 'exportPdf'])->name('admin.kecamatan.rekapitulasi.pdf');
     Route::get('/admin-kecamatan/rekapitulasi/excel', [KecamatanController::class, 'exportExcel'])->name('admin.kecamatan.rekapitulasi.excel'); 
+
+    Route::middleware(['auth'])->prefix('admin')->as('admin.')->group(function () {
+    Route::get('/prediksi', [PrediksiController::class, 'index'])->name('prediksi');
+    });
+    
 });

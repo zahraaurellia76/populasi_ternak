@@ -14,30 +14,134 @@
             flex-direction: column;
             min-height: 100vh;
             background-color: #f4f7f4;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
         }
         main { flex: 1; }
-        .bg-emerald {
-            background-color: #1b4d3e !important;
+
+        /* Navigation Bar */
+        .main-navbar {
+            background: linear-gradient(to right, #164e3b 0%, #226040 50%, #2d7a4c 100%) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .hero-section {
-            background: linear-gradient(135deg, #1b4d3e 0%, #2e7d32 100%);
-            color: white;
-            padding: 60px 0;
+        .main-navbar .navbar-brand,
+        .main-navbar .nav-link {
+            color: #ffffff !important;
         }
-        .btn-emerald {
-            background-color: #2e7d32;
-            color: white;
+        .main-navbar .nav-link:hover {
+            color: #eab308 !important;
         }
-        .btn-emerald:hover {
-            background-color: #1b4d3e;
-            color: white;
+
+        /* Action Buttons & Badges (Global) */
+        .btn-action-edit {
+            background-color: #fef3c7 !important;
+            color: #d97706 !important;
+            border: none;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 6px 12px;
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-action-edit:hover {
+            background-color: #fde68a !important;
+            color: #b45309 !important;
+            transform: translateY(-2px);
+        }
+        .btn-action-delete {
+            background-color: #fee2e2 !important;
+            color: #dc2626 !important;
+            border: none;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 6px 12px;
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-action-delete:hover {
+            background-color: #fca5a5 !important;
+            color: #991b1b !important;
+            transform: translateY(-2px);
+        }
+        .badge-soft-emerald {
+            background-color: #dcfce7 !important;
+            color: #15803d !important;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+        .badge-soft-blue {
+            background-color: #e0f2fe !important;
+            color: #0369a1 !important;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        /* Footer Layout */
+        .site-footer {
+            background-color: #1a4d3e;
+            color: #ffffff;
+            margin-top: 50px;
+        }
+        .footer-brand {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+        .footer-description {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            max-width: 650px;
+        }
+        .footer-title {
+            color: #eab308;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .footer-contact {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            color: #cbd5e1;
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+        .contact-item i {
+            color: #eab308;
+            width: 18px;
+            margin-top: 3px;
+        }
+        .footer-bottom {
+            background-color: #143e32;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 12px 0;
+        }
+        .footer-bottom small {
+            color: #cbd5e1;
+            font-size: 0.78rem;
+        }
+
+        @media (max-width: 767px) {
+            .site-footer { text-align: left; }
+            .footer-description { max-width: 100%; }
+            .footer-bottom .d-flex {
+                flex-direction: column;
+                align-items: flex-start !important;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- HEADER / NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-emerald sticky-top shadow-sm">
+    <!-- Header / Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark main-navbar sticky-top shadow-sm">
         <div class="container">
             <a class="navbar-brand fw-bold text-white" href="{{ route('public.index') }}">
                 <i class="fa-solid fa-cow me-2 text-warning"></i> Simnak Kediri
@@ -66,32 +170,47 @@
         </div>
     </nav>
 
-    <!-- CONTENT PLACEHOLDER -->
+    <!-- Main Content -->
     <main>
         @yield('content')
     </main>
 
-    <!-- FOOTER -->
-    <footer class="bg-emerald text-white text-center text-lg-start mt-5">
-        <div class="container p-4">
-            <div class="row">
-                <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
-                    <h5 class="text-uppercase text-warning fw-bold">Sistem Monitoring Ternak</h5>
-                    <p class="small text-light">
-                        Layanan Pemantauan Populasi Ternak Kabupaten Kediri. Menyajikan data terintegrasi populasi ternak tingkat kecamatan secara akurat dan transparan.
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container py-4">
+            <div class="row align-items-start">
+                <div class="col-lg-7 col-md-7 mb-3 mb-md-0">
+                    <div class="footer-brand mb-2">
+                        <i class="fa-solid fa-cow me-2 text-warning"></i>
+                        <span>Simnak Kediri</span>
+                    </div>
+                    <p class="footer-description mb-0">
+                        Sistem Informasi Monitoring Populasi Ternak Kabupaten Kediri.
+                        Menyajikan informasi populasi ternak tingkat kecamatan secara terintegrasi dan transparan.
                     </p>
                 </div>
-                <div class="col-lg-6 col-md-12 mb-4 mb-md-0 text-lg-end">
-                    <h5 class="text-uppercase text-warning fw-bold">Kontak Dinas</h5>
-                    <p class="small text-light mb-0">
-                        Dinas Ketahanan Pangan dan Peternakan (DKPP) Kabupaten Kediri<br>
-                        Jl. Soekarno Hatta No. 1, Kediri, Jawa Timur
-                    </p>
+                <div class="col-lg-5 col-md-5">
+                    <h6 class="footer-title">Kontak Dinas</h6>
+                    <div class="footer-contact">
+                        <div class="contact-item">
+                            <i class="fa-solid fa-building"></i>
+                            <span>Dinas Ketahanan Pangan dan Peternakan (DKPP) Kabupaten Kediri</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span>Jl. Penanggungan No.12, Bandar Lor, Kec. Mojoroto, Kabupaten Kediri, Jawa Timur 64114</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="text-center p-3 bg-black bg-opacity-25 border-top border-success">
-            <small>&copy; {{ date('Y') }} DKPP Kabupaten Kediri. All rights reserved.</small>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <small>© {{ date('Y') }} Simnak Kediri</small>
+                    <small>DKPP Kabupaten Kediri</small>
+                </div>
+            </div>
         </div>
     </footer>
 
