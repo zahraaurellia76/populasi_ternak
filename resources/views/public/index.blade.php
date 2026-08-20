@@ -4,54 +4,69 @@
 
 @section('content')
 <style>
-    /* Hero Section (Gradasi Emerald Cerah Match Theme) */
+    /* Hero Section Gradient dengan Glow Modern */
     .hero-section {
         background: linear-gradient(135deg, #10b981 0%, #047857 100%);
         color: #ffffff;
         padding: 3.5rem 1rem;
-        border-radius: 0 0 24px 24px;
-        margin-bottom: 2rem;
+        border-radius: 0 0 28px 28px;
+        margin-bottom: 2.5rem;
+        box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
     }
 
-    /* Filter Inputs */
+    /* Card Modern Elevation (Hover Effect) */
+    .card-modern {
+        background-color: #ffffff;
+        border: 1px solid rgba(16, 185, 129, 0.1) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-modern:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 28px rgba(4, 120, 87, 0.12) !important;
+    }
+
+    /* Filter Inputs Border & Focus Focus Glow */
     .form-select-custom, .form-control-custom {
-        border: 1px solid #10b981 !important;
-        border-radius: 8px;
+        border: 1.5px solid #a7f3d0 !important;
+        border-radius: 10px;
+        transition: all 0.2s ease-in-out;
     }
     .form-select-custom:focus, .form-control-custom:focus {
-        border-color: #047857 !important;
+        border-color: #10b981 !important;
         box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.2) !important;
     }
 
-    /* Header Tabel: Gradasi Emerald Cerah & Font Judul Lebih Besar */
+    /* Header Tabel: Gradasi Emerald Cerah */
     .table-public thead th {
         background: linear-gradient(135deg, #10b981 0%, #047857 100%) !important;
         color: #ffffff !important;
         border: none !important;
-        font-size: 0.9rem !important; /* Font Judul Lebih Besar dari Isi */
+        font-size: 0.9rem !important;
         font-weight: 700 !important;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        padding: 14px 16px !important;
+        padding: 16px 18px !important;
         vertical-align: middle;
     }
 
-    /* Isi Tabel (Font Lebih Kecil) */
+    /* Isi Tabel (Font & Hover Interactive) */
     .table-public tbody td {
-        font-size: 0.85rem !important; /* Font Isi Lebih Kecil */
-        padding: 12px 16px !important;
+        font-size: 0.85rem !important;
+        padding: 14px 18px !important;
         vertical-align: middle;
+        transition: background-color 0.2s ease;
     }
 
     .table-public tbody tr {
-        transition: background-color 0.15s ease-in-out;
+        transition: all 0.2s ease;
     }
 
     .table-public tbody tr:hover {
         background-color: #ecfdf5 !important;
+        transform: scale(1.002);
     }
 
-    /* Custom Badge Periode */
+    /* Custom Badge Periode Soft */
     .badge-periode-soft {
         background-color: #dcfce7;
         color: #15803d;
@@ -60,13 +75,15 @@
         padding: 6px 14px;
         border-radius: 20px;
         display: inline-block;
+        box-shadow: 0 2px 6px rgba(21, 128, 61, 0.08);
     }
 
-    /* Custom Button Filter Emerald */
+    /* Custom Button Filter Emerald Elevation */
     .btn-filter-custom {
         background: linear-gradient(135deg, #10b981 0%, #047857 100%);
         color: #ffffff;
         border: none;
+        border-radius: 10px;
         transition: all 0.3s ease-in-out;
     }
 
@@ -74,12 +91,54 @@
         background: linear-gradient(135deg, #34d399 0%, #059669 100%);
         color: #ffffff;
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35) !important;
+        box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35) !important;
+    }
+
+    /* Highlight Card Grafik */
+    .card-chart-accent {
+        border-left: 5px solid #10b981 !important;
+    }
+
+    /* CSS Khusus Cetak Halaman (Ctrl + P) */
+    @media print {
+        .hero-section,
+        .card:has(form),
+        .btn,
+        nav,
+        footer,
+        .no-print {
+            display: none !important;
+        }
+
+        body {
+            background-color: #ffffff !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .container {
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        .table-public thead th {
+            background-color: #10b981 !important;
+            color: #ffffff !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
     }
 </style>
 
 <!-- Hero Section Header -->
-<div class="hero-section text-center shadow-sm">
+<div class="hero-section text-center">
     <div class="container py-2">
         <h1 class="fw-bold display-6 mb-2" style="letter-spacing: -0.5px;">
             <i class="fa-solid fa-cow me-2 text-warning"></i>Data Populasi Ternak Kabupaten Kediri
@@ -93,14 +152,14 @@
 <div class="container my-4">
 
     <!-- Card Form Filter Data -->
-    <div class="card shadow-sm border-0 rounded-4 mb-4 bg-white">
+    <div class="card card-modern shadow-sm border-0 rounded-4 mb-4">
         <div class="card-body p-4">
             <form action="{{ route('public.index') }}" method="GET" class="row g-3 align-items-end">
                 <div class="col-md-4">
                     <label class="form-label fw-bold small mb-1" style="color: #047857;">
                         <i class="fa-solid fa-location-dot me-1"></i>Kecamatan
                     </label>
-                    <select name="kecamatan_id" class="form-select form-select-custom text-dark fw-semibold fs-7">
+                    <select name="kecamatan_id" class="form-select form-select-custom text-dark fw-semibold fs-7 py-2">
                         @foreach($kecamatans as $kec)
                             <option value="{{ $kec->id }}" {{ $selectedKecamatanId == $kec->id ? 'selected' : '' }}>
                                 {{ $kec->nama_kecamatan }}
@@ -113,14 +172,14 @@
                     <label class="form-label fw-bold small mb-1" style="color: #047857;">
                         <i class="fa-solid fa-calendar me-1"></i>Tahun
                     </label>
-                    <input type="number" name="tahun" class="form-control form-control-custom text-dark fw-semibold fs-7" value="{{ $selectedTahun ?? '2026' }}" placeholder="Masukkan Tahun">
+                    <input type="number" name="tahun" class="form-control form-control-custom text-dark fw-semibold fs-7 py-2" value="{{ $selectedTahun ?? '2026' }}" placeholder="Masukkan Tahun">
                 </div>
 
                 <div class="col-md-3">
                     <label class="form-label fw-bold small mb-1" style="color: #047857;">
                         <i class="fa-solid fa-calendar-quarter me-1"></i>Triwulan
                     </label>
-                    <select name="triwulan" class="form-select form-select-custom text-dark fw-semibold fs-7">
+                    <select name="triwulan" class="form-select form-select-custom text-dark fw-semibold fs-7 py-2">
                         <option value="1" {{ (isset($selectedTriwulan) && $selectedTriwulan == '1') ? 'selected' : '' }}>Triwulan I (Jan - Mar)</option>
                         <option value="2" {{ (isset($selectedTriwulan) && $selectedTriwulan == '2') ? 'selected' : '' }}>Triwulan II (Apr - Jun)</option>
                         <option value="3" {{ (isset($selectedTriwulan) && $selectedTriwulan == '3') ? 'selected' : '' }}>Triwulan III (Jul - Sep)</option>
@@ -129,7 +188,7 @@
                 </div>
 
                 <div class="col-md-2">
-                    <button type="submit" class="btn btn-filter-custom w-100 fw-bold rounded-3 shadow-sm py-2">
+                    <button type="submit" class="btn btn-filter-custom w-100 fw-bold py-2 shadow-sm">
                         <i class="fa-solid fa-filter me-1"></i> Filter
                     </button>
                 </div>
@@ -138,10 +197,10 @@
     </div>
 
     <!-- Card Tabel Data Rekapitulasi -->
-    <div class="card shadow-sm border-0 rounded-4 mb-4 overflow-hidden bg-white">
+    <div class="card card-modern shadow-sm border-0 rounded-4 mb-4 overflow-hidden">
         <div class="card-header bg-white py-3 px-4 border-0 d-flex align-items-center">
             <h6 class="card-title mb-0 fw-bold text-dark">
-                <i class="fa-solid fa-table me-2" style="color: #047857;"></i>Tabel Rekapitulasi Populasi Ternak
+                <i class="fa-solid fa-table me-2 text-success"></i>Tabel Rekapitulasi Populasi Ternak
             </h6>
         </div>
         <div class="card-body p-0">
@@ -198,10 +257,10 @@
     </div>
 
     <!-- Card Grafik Visualisasi -->
-    <div class="card shadow-sm border-0 rounded-4 bg-white">
+    <div class="card card-modern card-chart-accent shadow-sm border-0 rounded-4">
         <div class="card-header bg-transparent py-3 px-4 border-0">
             <h6 class="card-title mb-0 fw-bold text-dark">
-                <i class="fa-solid fa-chart-column me-2" style="color: #047857;"></i>Grafik Visualisasi Populasi Ternak
+                <i class="fa-solid fa-chart-column me-2 text-success"></i>Grafik Visualisasi Populasi Ternak
             </h6>
         </div>
         <div class="card-body p-4">
@@ -230,10 +289,10 @@
 
         if (labels.length > 0) {
             const ctx = document.getElementById('populasiChart').getContext('2d');
-            
+
             const gradient = ctx.createLinearGradient(0, 0, 0, 300);
             gradient.addColorStop(0, 'rgba(16, 185, 129, 0.85)');
-            gradient.addColorStop(1, 'rgba(16, 185, 129, 0.2)');
+            gradient.addColorStop(1, 'rgba(16, 185, 129, 0.15)');
 
             new Chart(ctx, {
                 type: 'bar',

@@ -8,7 +8,7 @@
     .table-custom thead th {
         background: linear-gradient(135deg, #10b981 0%, #047857 100%) !important;
         color: #ffffff !important;
-        font-size: 0.9rem !important; /* Font Judul Lebih Besar */
+        font-size: 0.9rem !important;
         font-weight: 700 !important;
         text-transform: uppercase;
         letter-spacing: 0.05em;
@@ -19,7 +19,7 @@
 
     /* Isi Tabel (Font Lebih Kecil) */
     .table-custom tbody td {
-        font-size: 0.85rem !important; /* Font Isi Lebih Kecil */
+        font-size: 0.85rem !important;
         padding: 12px 16px !important;
         vertical-align: middle;
     }
@@ -125,8 +125,22 @@
         </div>
     @endif
 
-    <!-- Card Tabel Data User -->
+    @php
+        // Memisah koleksi user menjadi dua bagian secara dinamis
+        $usersKabupaten = $users->filter(fn($u) => $u->role == 'admin_kabupaten');
+        $usersKecamatan = $users->filter(fn($u) => $u->role != 'admin_kabupaten');
+    @endphp
+
+    <!-- TABEL 1: DATA USER ADMIN KABUPATEN -->
     <div class="card shadow-sm border-0 rounded-4 mb-4 overflow-hidden bg-white">
+        <div class="card-header bg-white py-3 px-4 border-0 d-flex justify-content-between align-items-center">
+            <h6 class="fw-bold text-dark mb-0">
+                <i class="fa-solid fa-user-shield me-2 text-success"></i>Daftar User Admin Kabupaten
+            </h6>
+            <span class="badge bg-success bg-opacity-10 text-success fw-bold px-3 py-2 rounded-pill fs-8">
+                {{ $usersKabupaten->count() }} Akun
+            </span>
+        </div>
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover align-middle table-custom mb-0">
@@ -134,17 +148,16 @@
                         <tr>
                             <th class="text-center" style="width: 60px;">NO</th>
                             <th>NAMA LENGKAP</th>
-                            <th class="text-center" style="width: 180px;">USERNAME</th>
-                            <th class="text-center" style="width: 200px;">ROLE</th>
-                            <th class="text-center" style="width: 200px;">KECAMATAN</th>
-                            <th class="text-center" style="width: 120px;">AKSI</th>
+                            <th class="text-center" style="width: 220px;">USERNAME</th>
+                            <th class="text-center" style="width: 220px;">ROLE</th>
+                            <th class="text-center" style="width: 140px;">AKSI</th>
                         </tr>
                     </thead>
                     <tbody class="border-top-0">
-                        @forelse($users as $index => $u)
+                        @forelse($usersKabupaten as $u)
                             <tr>
                                 <td class="text-center fw-semibold text-secondary">
-                                    {{ method_exists($users, 'firstItem') ? $users->firstItem() + $index : $index + 1 }}
+                                    {{ $loop->iteration }}
                                 </td>
                                 <td>
                                     <span class="fw-bold text-dark">{{ $u->nama }}</span>
@@ -153,27 +166,16 @@
                                     <span class="badge-username">{{ $u->username }}</span>
                                 </td>
                                 <td class="text-center">
-                                    @if($u->role == 'admin_kabupaten')
-                                        <span class="badge rounded-pill px-3 py-2 fw-semibold fs-7 badge-role-admin">
-                                            <i class="fa-solid fa-user-shield me-1"></i>Admin Kabupaten
-                                        </span>
-                                    @else
-                                        <span class="badge rounded-pill px-3 py-2 fw-semibold fs-7 badge-role-petugas">
-                                            <i class="fa-solid fa-user-tag me-1"></i>Petugas Kecamatan
-                                        </span>
-                                    @endif
-                                </td>
-                                <td class="text-center text-secondary fw-semibold">
-                                    {{ $u->kecamatan->nama_kecamatan ?? '-' }}
+                                    <span class="badge rounded-pill px-3 py-2 fw-semibold fs-7 badge-role-admin">
+                                        <i class="fa-solid fa-user-shield me-1"></i>Admin Kabupaten
+                                    </span>
                                 </td>
                                 <td class="text-center">
                                     <div class="d-inline-flex gap-1">
-                                        <!-- Tombol Edit -->
                                         <button class="btn btn-action-edit btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditUser{{ $u->id }}" title="Edit User">
                                             <i class="fa-solid fa-pen"></i>
                                         </button>
 
-                                        <!-- Tombol Hapus -->
                                         <form action="{{ route('admin.kabupaten.users.destroy', $u->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus user ini?')">
                                             @csrf
                                             @method('DELETE')
@@ -184,67 +186,11 @@
                                     </div>
                                 </td>
                             </tr>
-
-                            <!-- Modal Edit User -->
-                            <div class="modal fade" id="modalEditUser{{ $u->id }}" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-                                        <form action="{{ route('admin.kabupaten.users.update', $u->id) }}" method="POST">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="modal-header border-0 text-white p-4" style="background: linear-gradient(135deg, #10b981 0%, #047857 100%);">
-                                                <h5 class="modal-title fw-bold fs-6">
-                                                    <i class="fa-solid fa-user-pen me-2"></i>Edit Data User
-                                                </h5>
-                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                            </div>
-                                            <div class="modal-body p-4 text-start">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-semibold small text-muted">Nama Lengkap</label>
-                                                    <input type="text" name="nama" class="form-control rounded-3" value="{{ $u->nama }}" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-semibold small text-muted">Username</label>
-                                                    <input type="text" name="username" class="form-control rounded-3" value="{{ $u->username }}" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-semibold small text-muted">
-                                                        Password Baru <span class="fw-normal text-secondary">(Kosongkan jika tidak diubah)</span>
-                                                    </label>
-                                                    <input type="password" name="password" class="form-control rounded-3" placeholder="••••••••">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-semibold small text-muted">Role Pengguna</label>
-                                                    <select name="role" class="form-select rounded-3" required>
-                                                        <option value="admin_kabupaten" {{ $u->role == 'admin_kabupaten' ? 'selected' : '' }}>Admin Kabupaten</option>
-                                                        <option value="petugas_kecamatan" {{ $u->role == 'petugas_kecamatan' ? 'selected' : '' }}>Petugas Kecamatan</option>
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-semibold small text-muted">
-                                                        Kecamatan <span class="fw-normal text-secondary">(Khusus Petugas Kecamatan)</span>
-                                                    </label>
-                                                    <select name="kecamatan_id" class="form-select rounded-3">
-                                                        <option value="">-- Pilih Kecamatan --</option>
-                                                        @foreach($kecamatans as $kc)
-                                                            <option value="{{ $kc->id }}" {{ $u->kecamatan_id == $kc->id ? 'selected' : '' }}>{{ $kc->nama_kecamatan }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer border-0 pt-0 px-4 pb-4">
-                                                <button type="button" class="btn btn-light rounded-3 fw-semibold small" data-bs-dismiss="modal">Batal</button>
-                                                <button type="submit" class="btn btn-emerald rounded-3 fw-semibold small">Simpan Perubahan</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center py-5 text-muted bg-white">
+                                <td colspan="5" class="text-center py-4 text-muted bg-white">
                                     <i class="fa-solid fa-inbox fa-2x mb-2 opacity-25"></i>
-                                    <p class="mb-0 small fw-semibold">Belum ada data user yang terdaftar.</p>
+                                    <p class="mb-0 small fw-semibold">Belum ada data user Admin Kabupaten.</p>
                                 </td>
                             </tr>
                         @endforelse
@@ -253,6 +199,138 @@
             </div>
         </div>
     </div>
+
+
+    <!-- TABEL 2: DATA USER PETUGAS KECAMATAN -->
+    <div class="card shadow-sm border-0 rounded-4 mb-4 overflow-hidden bg-white">
+        <div class="card-header bg-white py-3 px-4 border-0 d-flex justify-content-between align-items-center">
+            <h6 class="fw-bold text-dark mb-0">
+                <i class="fa-solid fa-users me-2 text-success"></i>Daftar User Petugas Kecamatan
+            </h6>
+            <span class="badge bg-success bg-opacity-10 text-success fw-bold px-3 py-2 rounded-pill fs-8">
+                {{ $usersKecamatan->count() }} Akun
+            </span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle table-custom mb-0">
+                    <thead>
+                        <tr>
+                            <th class="text-center" style="width: 60px;">NO</th>
+                            <th>NAMA LENGKAP</th>
+                            <th class="text-center" style="width: 200px;">USERNAME</th>
+                            <th class="text-center" style="width: 200px;">ROLE</th>
+                            <th class="text-center" style="width: 200px;">KECAMATAN</th>
+                            <th class="text-center" style="width: 140px;">AKSI</th>
+                        </tr>
+                    </thead>
+                    <tbody class="border-top-0">
+                        @forelse($usersKecamatan as $u)
+                            <tr>
+                                <td class="text-center fw-semibold text-secondary">
+                                    {{ $loop->iteration }}
+                                </td>
+                                <td>
+                                    <span class="fw-bold text-dark">{{ $u->nama }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge-username">{{ $u->username }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge rounded-pill px-3 py-2 fw-semibold fs-7 badge-role-petugas">
+                                        <i class="fa-solid fa-user-tag me-1"></i>Petugas Kecamatan
+                                    </span>
+                                </td>
+                                <td class="text-center text-dark fw-bold">
+                                    {{ $u->kecamatan->nama_kecamatan ?? '-' }}
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-inline-flex gap-1">
+                                        <button class="btn btn-action-edit btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditUser{{ $u->id }}" title="Edit User">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </button>
+
+                                        <form action="{{ route('admin.kabupaten.users.destroy', $u->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus user ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-action-delete btn-sm" title="Hapus User">
+                                                <i class="fa-solid fa-trash-can"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-muted bg-white">
+                                    <i class="fa-solid fa-inbox fa-2x mb-2 opacity-25"></i>
+                                    <p class="mb-0 small fw-semibold">Belum ada data user Petugas Kecamatan.</p>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals Edit untuk Semua User -->
+    @foreach($users as $u)
+        <div class="modal fade" id="modalEditUser{{ $u->id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+                    <form action="{{ route('admin.kabupaten.users.update', $u->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-header border-0 text-white p-4" style="background: linear-gradient(135deg, #10b981 0%, #047857 100%);">
+                            <h5 class="modal-title fw-bold fs-6">
+                                <i class="fa-solid fa-user-pen me-2"></i>Edit Data User
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body p-4 text-start">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold small text-muted">Nama Lengkap</label>
+                                <input type="text" name="nama" class="form-control rounded-3" value="{{ $u->nama }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold small text-muted">Username</label>
+                                <input type="text" name="username" class="form-control rounded-3" value="{{ $u->username }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold small text-muted">
+                                    Password Baru <span class="fw-normal text-secondary">(Kosongkan jika tidak diubah)</span>
+                                </label>
+                                <input type="password" name="password" class="form-control rounded-3" placeholder="••••••••">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold small text-muted">Role Pengguna</label>
+                                <select name="role" class="form-select rounded-3" required>
+                                    <option value="admin_kabupaten" {{ $u->role == 'admin_kabupaten' ? 'selected' : '' }}>Admin Kabupaten</option>
+                                    <option value="petugas_kecamatan" {{ $u->role == 'petugas_kecamatan' ? 'selected' : '' }}>Petugas Kecamatan</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold small text-muted">
+                                    Kecamatan <span class="fw-normal text-secondary">(Khusus Petugas Kecamatan)</span>
+                                </label>
+                                <select name="kecamatan_id" class="form-select rounded-3">
+                                    <option value="">-- Pilih Kecamatan --</option>
+                                    @foreach($kecamatans as $kc)
+                                        <option value="{{ $kc->id }}" {{ $u->kecamatan_id == $kc->id ? 'selected' : '' }}>{{ $kc->nama_kecamatan }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0 pt-0 px-4 pb-4">
+                            <button type="button" class="btn btn-light rounded-3 fw-semibold small" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-emerald rounded-3 fw-semibold small">Simpan Perubahan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endforeach
 
     <!-- Pagination -->
     @if(method_exists($users, 'hasPages') && $users->hasPages())
