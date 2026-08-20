@@ -4,31 +4,46 @@
 
 @section('content')
 <style>
-    /* Hero Section Gradient dengan Glow Modern */
+    /* Hero Section Gradient dengan Glow & Soft Elevation */
     .hero-section {
         background: linear-gradient(135deg, #10b981 0%, #047857 100%);
         color: #ffffff;
-        padding: 3.5rem 1rem;
-        border-radius: 0 0 28px 28px;
-        margin-bottom: 2.5rem;
-        box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
+        padding: 3.5rem 1rem 4.5rem 1rem;
+        border-radius: 0 0 32px 32px;
+        margin-bottom: -2.5rem;
+        box-shadow: 0 12px 32px rgba(16, 185, 129, 0.25);
+        position: relative;
     }
 
-    /* Card Modern Elevation (Hover Effect) */
+    /* Stat Card Overlay di Atas Hero */
+    .stat-card-hero {
+        background: #ffffff;
+        border: 1px solid rgba(16, 185, 129, 0.15) !important;
+        border-radius: 18px;
+        padding: 1.25rem 1.5rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05) !important;
+    }
+    .stat-card-hero:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 15px 30px rgba(16, 185, 129, 0.18) !important;
+    }
+
+    /* Card Modern Elevation */
     .card-modern {
         background-color: #ffffff;
-        border: 1px solid rgba(16, 185, 129, 0.1) !important;
+        border: 1px solid rgba(16, 185, 129, 0.12) !important;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .card-modern:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 28px rgba(4, 120, 87, 0.12) !important;
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px rgba(4, 120, 87, 0.1) !important;
     }
 
-    /* Filter Inputs Border & Focus Focus Glow */
+    /* Filter Inputs Border & Focus Glow */
     .form-select-custom, .form-control-custom {
         border: 1.5px solid #a7f3d0 !important;
-        border-radius: 10px;
+        border-radius: 12px;
         transition: all 0.2s ease-in-out;
     }
     .form-select-custom:focus, .form-control-custom:focus {
@@ -63,7 +78,6 @@
 
     .table-public tbody tr:hover {
         background-color: #ecfdf5 !important;
-        transform: scale(1.002);
     }
 
     /* Custom Badge Periode Soft */
@@ -83,7 +97,7 @@
         background: linear-gradient(135deg, #10b981 0%, #047857 100%);
         color: #ffffff;
         border: none;
-        border-radius: 10px;
+        border-radius: 12px;
         transition: all 0.3s ease-in-out;
     }
 
@@ -99,9 +113,21 @@
         border-left: 5px solid #10b981 !important;
     }
 
+    /* Icon Box Soft Color */
+    .icon-box-soft {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+
     /* CSS Khusus Cetak Halaman (Ctrl + P) */
     @media print {
         .hero-section,
+        .stat-section,
         .card:has(form),
         .btn,
         nav,
@@ -140,28 +166,97 @@
 <!-- Hero Section Header -->
 <div class="hero-section text-center">
     <div class="container py-2">
-        <h1 class="fw-bold display-6 mb-2" style="letter-spacing: -0.5px;">
+        <span class="badge bg-white text-success fw-bold px-3 py-2 rounded-pill shadow-sm mb-3">
+            <i class="fa-solid fa-chart-line me-1"></i> Portal Informasi Resmi Publik
+        </span>
+        <h1 class="fw-bold display-5 mb-2" style="letter-spacing: -0.8px;">
             <i class="fa-solid fa-cow me-2 text-warning"></i>Data Populasi Ternak Kabupaten Kediri
         </h1>
-        <p class="lead fs-6 text-white-50 mb-0">
-            Informasi rekapitulasi jumlah populasi ternak resmi triwulanan per kecamatan.
+        <p class="lead fs-6 text-white-50 mb-0 mx-auto" style="max-width: 700px;">
+            Laporan rekapitulasi data dan statistik perkembangan populasi ternak resmi per kecamatan di wilayah Kabupaten Kediri.
         </p>
     </div>
 </div>
 
-<div class="container my-4">
+<div class="container my-4" style="position: relative; z-index: 10;">
+
+    @php
+        // Perhitungan Total Terdata yang presisi (menangani Paginator maupun Collection)
+        $totalTerdata = 0;
+        if (isset($populasi)) {
+            if (method_exists($populasi, 'items')) {
+                $totalTerdata = collect($populasi->items())->sum('jumlah');
+            } elseif (method_exists($populasi, 'sum')) {
+                $totalTerdata = $populasi->sum('jumlah');
+            }
+        }
+    @endphp
+
+    <!-- Stat Cards Summary (Daftar Ringkasan Metric) -->
+    <div class="row g-3 mb-4 stat-section">
+        <div class="col-6 col-md-3">
+            <div class="stat-card-hero d-flex align-items-center gap-3">
+                <div class="icon-box-soft" style="background-color: #dcfce7; color: #059669;">
+                    <i class="fa-solid fa-paw"></i>
+                </div>
+                <div>
+                    <div class="text-muted small fw-semibold">Total Terdata</div>
+                    <div class="fs-5 fw-bold text-dark">
+                        {{ number_format($totalTerdata, 0, ',', '.') }} <span class="fs-8 text-muted fw-normal">Ekor</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card-hero d-flex align-items-center gap-3">
+                <div class="icon-box-soft" style="background-color: #e0f2fe; color: #0284c7;">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                </div>
+                <div>
+                    <div class="text-muted small fw-semibold">Kecamatan</div>
+                    <div class="fs-5 fw-bold text-dark">{{ isset($kecamatans) ? count($kecamatans) : 0 }} <span class="fs-8 text-muted fw-normal">Wilayah</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card-hero d-flex align-items-center gap-3">
+                <div class="icon-box-soft" style="background-color: #fef3c7; color: #d97706;">
+                    <i class="fa-solid fa-calendar-check"></i>
+                </div>
+                <div>
+                    <div class="text-muted small fw-semibold">Tahun Rekap</div>
+                    <div class="fs-5 fw-bold text-dark">{{ $selectedTahun ?? date('Y') }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card-hero d-flex align-items-center gap-3">
+                <div class="icon-box-soft" style="background-color: #ffe4e6; color: #e11d48;">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <div>
+                    <div class="text-muted small fw-semibold">Triwulan</div>
+                    <div class="fs-5 fw-bold text-dark">Ke-{{ $selectedTriwulan ?? '1' }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Card Form Filter Data -->
     <div class="card card-modern shadow-sm border-0 rounded-4 mb-4">
         <div class="card-body p-4">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <i class="fa-solid fa-sliders text-success fs-5"></i>
+                <h6 class="fw-bold mb-0 text-dark">Filter Pencarian Data Populasi</h6>
+            </div>
             <form action="{{ route('public.index') }}" method="GET" class="row g-3 align-items-end">
                 <div class="col-md-4">
                     <label class="form-label fw-bold small mb-1" style="color: #047857;">
-                        <i class="fa-solid fa-location-dot me-1"></i>Kecamatan
+                        <i class="fa-solid fa-location-dot me-1"></i>Pilih Kecamatan
                     </label>
                     <select name="kecamatan_id" class="form-select form-select-custom text-dark fw-semibold fs-7 py-2">
                         @foreach($kecamatans as $kec)
-                            <option value="{{ $kec->id }}" {{ $selectedKecamatanId == $kec->id ? 'selected' : '' }}>
+                            <option value="{{ $kec->id }}" {{ (isset($selectedKecamatanId) && $selectedKecamatanId == $kec->id) ? 'selected' : '' }}>
                                 {{ $kec->nama_kecamatan }}
                             </option>
                         @endforeach
@@ -170,14 +265,14 @@
 
                 <div class="col-md-3">
                     <label class="form-label fw-bold small mb-1" style="color: #047857;">
-                        <i class="fa-solid fa-calendar me-1"></i>Tahun
+                        <i class="fa-solid fa-calendar me-1"></i>Tahun Rekap
                     </label>
-                    <input type="number" name="tahun" class="form-control form-control-custom text-dark fw-semibold fs-7 py-2" value="{{ $selectedTahun ?? '2026' }}" placeholder="Masukkan Tahun">
+                    <input type="number" name="tahun" class="form-control form-control-custom text-dark fw-semibold fs-7 py-2" value="{{ $selectedTahun ?? date('Y') }}" placeholder="Masukkan Tahun">
                 </div>
 
                 <div class="col-md-3">
                     <label class="form-label fw-bold small mb-1" style="color: #047857;">
-                        <i class="fa-solid fa-calendar-quarter me-1"></i>Triwulan
+                        <i class="fa-solid fa-calendar-quarter me-1"></i>Periode Triwulan
                     </label>
                     <select name="triwulan" class="form-select form-select-custom text-dark fw-semibold fs-7 py-2">
                         <option value="1" {{ (isset($selectedTriwulan) && $selectedTriwulan == '1') ? 'selected' : '' }}>Triwulan I (Jan - Mar)</option>
@@ -188,8 +283,9 @@
                 </div>
 
                 <div class="col-md-2">
-                    <button type="submit" class="btn btn-filter-custom w-100 fw-bold py-2 shadow-sm">
-                        <i class="fa-solid fa-filter me-1"></i> Filter
+                    <button type="submit" class="btn btn-filter-custom w-100 fw-bold py-2 shadow-sm d-flex align-items-center justify-content-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <span>Filter</span>
                     </button>
                 </div>
             </form>
@@ -198,10 +294,13 @@
 
     <!-- Card Tabel Data Rekapitulasi -->
     <div class="card card-modern shadow-sm border-0 rounded-4 mb-4 overflow-hidden">
-        <div class="card-header bg-white py-3 px-4 border-0 d-flex align-items-center">
-            <h6 class="card-title mb-0 fw-bold text-dark">
-                <i class="fa-solid fa-table me-2 text-success"></i>Tabel Rekapitulasi Populasi Ternak
+        <div class="card-header bg-white py-3 px-4 border-0 d-flex align-items-center justify-content-between">
+            <h6 class="card-title mb-0 fw-bold text-dark d-flex align-items-center">
+                <i class="fa-solid fa-table-list me-2 text-success"></i>Tabel Rekapitulasi Populasi Ternak
             </h6>
+            <span class="badge bg-success bg-opacity-10 text-success fw-bold px-3 py-2 rounded-pill fs-8">
+                <i class="fa-solid fa-circle-check me-1"></i>Data Terverifikasi
+            </span>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -212,7 +311,7 @@
                             <th class="px-3">KECAMATAN</th>
                             <th class="px-3">JENIS TERNAK</th>
                             <th class="text-center" style="width: 200px;">PERIODE</th>
-                            <th class="text-end px-4" style="width: 200px;">JUMLAH POPULASI</th>
+                            <th class="text-end px-4" style="width: 220px;">JUMLAH POPULASI</th>
                         </tr>
                     </thead>
                     <tbody class="border-top-0">
@@ -222,10 +321,14 @@
                                     {{ method_exists($populasi, 'firstItem') ? $populasi->firstItem() + $index : $index + 1 }}
                                 </td>
                                 <td class="fw-bold text-dark px-3">
+                                    <i class="fa-solid fa-building-flag me-2 text-success opacity-75"></i>
                                     {{ $item->kecamatan->nama_kecamatan ?? '-' }}
                                 </td>
-                                <td class="px-3 text-secondary fw-semibold">
-                                    {{ $item->jenisTernak->nama_ternak ?? '-' }}
+                                <td class="px-3 text-dark fw-semibold">
+                                    <span class="badge bg-light text-dark border px-2 py-1 rounded-2 me-1">
+                                        <i class="fa-solid fa-paw text-warning me-1"></i>
+                                        {{ $item->jenisTernak->nama_ternak ?? '-' }}
+                                    </span>
                                 </td>
                                 <td class="text-center">
                                     <span class="badge-periode-soft">
@@ -233,7 +336,7 @@
                                     </span>
                                 </td>
                                 <td class="text-end fw-bold fs-6 px-4" style="color: #047857;">
-                                    {{ number_format($item->jumlah) }} <span class="fs-7 text-muted fw-normal">ekor</span>
+                                    {{ number_format($item->jumlah, 0, ',', '.') }} <span class="fs-7 text-muted fw-normal">ekor</span>
                                 </td>
                             </tr>
                         @empty
@@ -258,14 +361,15 @@
 
     <!-- Card Grafik Visualisasi -->
     <div class="card card-modern card-chart-accent shadow-sm border-0 rounded-4">
-        <div class="card-header bg-transparent py-3 px-4 border-0">
+        <div class="card-header bg-transparent py-3 px-4 border-0 d-flex align-items-center justify-content-between">
             <h6 class="card-title mb-0 fw-bold text-dark">
                 <i class="fa-solid fa-chart-column me-2 text-success"></i>Grafik Visualisasi Populasi Ternak
             </h6>
+            <small class="text-muted fw-semibold">Grafik Batang Komparasi Data</small>
         </div>
         <div class="card-body p-4">
-            @if(count($chartData) > 0)
-                <div style="position: relative; height: 350px; width: 100%;">
+            @if(isset($chartData) && count($chartData) > 0)
+                <div style="position: relative; height: 360px; width: 100%;">
                     <canvas id="populasiChart"></canvas>
                 </div>
             @else
@@ -284,8 +388,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const labels = @json($chartLabels);
-        const dataValues = @json($chartData);
+        const labels = @json($chartLabels ?? []);
+        const dataValues = @json($chartData ?? []);
 
         if (labels.length > 0) {
             const ctx = document.getElementById('populasiChart').getContext('2d');

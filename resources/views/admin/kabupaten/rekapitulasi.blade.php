@@ -4,11 +4,56 @@
 
 @section('content')
 <style>
-    /* Header Tabel: Gradasi Emerald Cerah & Font Judul Lebih Besar */
+    /* Stat Cards Gradasi Khas Dashboard */
+    .card-stat-emerald {
+        background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+        color: #ffffff;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-stat-emerald:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(16, 185, 129, 0.25) !important;
+    }
+
+    .card-stat-dark {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        color: #ffffff;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-stat-dark:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(30, 41, 59, 0.25) !important;
+    }
+
+    .card-stat-blue {
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        color: #ffffff;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-stat-blue:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(2, 132, 199, 0.25) !important;
+    }
+
+    .icon-box-stat {
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.2) !important;
+        backdrop-filter: blur(8px);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.35rem;
+        color: #ffffff !important;
+        flex-shrink: 0;
+    }
+
+    /* Header Tabel: Gradasi Emerald Cerah */
     .table-rekap thead th {
         background: linear-gradient(135deg, #10b981 0%, #047857 100%) !important;
         color: #ffffff !important;
-        font-size: 0.9rem !important; /* Font Judul Lebih Besar */
+        font-size: 0.88rem !important;
         font-weight: 700 !important;
         text-transform: uppercase;
         letter-spacing: 0.05em;
@@ -18,9 +63,9 @@
         vertical-align: middle;
     }
 
-    /* Isi Tabel (Font Lebih Kecil) */
+    /* Isi Tabel */
     .table-rekap tbody td {
-        font-size: 0.85rem !important; /* Font Isi Lebih Kecil */
+        font-size: 0.85rem !important;
         padding: 12px 16px !important;
         white-space: nowrap;
         vertical-align: middle;
@@ -51,13 +96,24 @@
 
     /* Form Filter Inputs */
     .form-select-custom {
-        border: 1px solid #10b981 !important;
-        border-radius: 8px;
+        border: 1.5px solid #a7f3d0 !important;
+        border-radius: 10px;
+        transition: all 0.2s ease-in-out;
     }
 
     .form-select-custom:focus {
-        border-color: #047857 !important;
+        border-color: #10b981 !important;
         box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.2) !important;
+    }
+
+    /* Card Elevation */
+    .card-dashboard-modern {
+        background-color: #ffffff;
+        border: 1px solid rgba(16, 185, 129, 0.12) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-dashboard-modern:hover {
+        box-shadow: 0 10px 25px rgba(4, 120, 87, 0.08) !important;
     }
 
     /* Export Buttons Soft Modern */
@@ -66,15 +122,15 @@
         color: #dc2626 !important;
         border: none;
         font-weight: 600;
-        border-radius: 8px;
-        padding: 8px 16px;
+        border-radius: 10px;
+        padding: 8px 18px;
         transition: all 0.2s ease;
     }
     .btn-pdf-soft:hover {
         background-color: #fca5a5 !important;
         color: #991b1b !important;
         transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(220, 38, 38, 0.2);
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
     }
 
     .btn-excel-soft {
@@ -82,40 +138,109 @@
         color: #15803d !important;
         border: none;
         font-weight: 600;
-        border-radius: 8px;
-        padding: 8px 16px;
+        border-radius: 10px;
+        padding: 8px 18px;
         transition: all 0.2s ease;
     }
     .btn-excel-soft:hover {
         background-color: #86efac !important;
         color: #166534 !important;
         transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(21, 128, 61, 0.2);
+        box-shadow: 0 4px 12px rgba(21, 128, 61, 0.25);
     }
 </style>
 
 <div class="container-fluid py-3">
 
     <!-- Header Judul -->
-    <div class="mb-4">
-        <h3 class="fw-bold mb-1" style="color: #047857; letter-spacing: -0.5px;">
-            <i class="fa-solid fa-chart-column text-warning me-2"></i>Rekapitulasi Data Populasi Ternak
-        </h3>
-        <p class="text-muted small mb-0">Matriks rekapitulasi sebaran populasi ternak per kecamatan di Kabupaten Kediri</p>
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+        <div>
+            <h3 class="fw-bold mb-1" style="color: #047857; letter-spacing: -0.5px;">
+                <i class="fa-solid fa-chart-column text-warning me-2"></i>Rekapitulasi Data Populasi Ternak
+            </h3>
+            <p class="text-muted small mb-0">Matriks rekapitulasi sebaran populasi ternak per kecamatan di Kabupaten Kediri</p>
+        </div>
+        <div>
+            <span class="badge rounded-pill bg-white text-dark shadow-sm px-3 py-2 border fw-semibold fs-7">
+                <i class="fa-solid fa-calendar-check text-success me-2"></i>Periode Laporan: <strong>Triwulan {{ $triwulanSelected ?? 'Semua' }} - {{ $tahunSelected }}</strong>
+            </span>
+        </div>
+    </div>
+
+    @php 
+        $grandTotals = array_fill_keys($jenisTernaks->pluck('id')->toArray(), 0);
+        $totalEkorKeseluruhan = 0;
+        foreach($rekap as $kc) {
+            foreach($jenisTernaks as $jt) {
+                $jml = $kc->populasiKecamatan->where('jenis_ternak_id', $jt->id)->sum('jumlah');
+                $grandTotals[$jt->id] += $jml;
+                $totalEkorKeseluruhan += $jml;
+            }
+        }
+    @endphp
+
+    <!-- Stat Cards Gradasi Khas Dashboard Admin -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 card-stat-emerald p-1 h-100">
+                <div class="card-body p-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-uppercase small fw-bold text-white-50 tracking-wider mb-1">Total Wilayah</div>
+                        <h3 class="fw-bold my-0" style="letter-spacing: -0.5px;">
+                            {{ count($rekap) }} <span class="fs-7 fw-normal text-white-50">Kecamatan</span>
+                        </h3>
+                    </div>
+                    <div class="icon-box-stat">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 card-stat-dark p-1 h-100">
+                <div class="card-body p-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-uppercase small fw-bold text-white-50 tracking-wider mb-1">Jenis Ternak</div>
+                        <h3 class="fw-bold my-0" style="letter-spacing: -0.5px;">
+                            {{ count($jenisTernaks) }} <span class="fs-7 fw-normal text-white-50">Kategori</span>
+                        </h3>
+                    </div>
+                    <div class="icon-box-stat">
+                        <i class="fa-solid fa-cow"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 card-stat-blue p-1 h-100">
+                <div class="card-body p-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-uppercase small fw-bold text-white-50 tracking-wider mb-1">Total Populasi Kabupaten</div>
+                        <h3 class="fw-bold my-0" style="letter-spacing: -0.5px;">
+                            {{ number_format($totalEkorKeseluruhan, 0, ',', '.') }} <span class="fs-7 fw-normal text-white-50">Ekor</span>
+                        </h3>
+                    </div>
+                    <div class="icon-box-stat">
+                        <i class="fa-solid fa-calculator"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Card Filter & Tombol Action -->
-    <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white">
+    <div class="card card-dashboard-modern border-0 shadow-sm rounded-4 mb-4 bg-white">
         <div class="card-body p-4">
             <div class="d-flex flex-wrap justify-content-between align-items-end gap-3">
                 
-                <!-- Form Filter -->
                 <form method="GET" action="{{ route('admin.kabupaten.rekapitulasi') }}" class="d-flex flex-wrap align-items-end gap-3">
                     <div>
                         <label class="form-label fw-bold small mb-1" style="color: #047857;">
                             <i class="fa-solid fa-calendar-quarter me-1"></i>Pilih Triwulan
                         </label>
-                        <select name="triwulan" class="form-select form-select-custom text-dark fw-semibold fs-7" onchange="this.form.submit()">
+                        <select name="triwulan" class="form-select form-select-custom text-dark fw-semibold fs-7 py-2" onchange="this.form.submit()">
                             <option value="">-- Semua Triwulan --</option>
                             @for($t = 1; $t <= 4; $t++)
                                 <option value="{{ $t }}" {{ (isset($triwulanSelected) && $triwulanSelected == $t) ? 'selected' : '' }}>
@@ -129,7 +254,7 @@
                         <label class="form-label fw-bold small mb-1" style="color: #047857;">
                             <i class="fa-solid fa-calendar me-1"></i>Pilih Tahun Rekap
                         </label>
-                        <select name="tahun" class="form-select form-select-custom text-dark fw-semibold fs-7" onchange="this.form.submit()">
+                        <select name="tahun" class="form-select form-select-custom text-dark fw-semibold fs-7 py-2" onchange="this.form.submit()">
                             @for($t = date('Y'); $t >= 2018; $t--)
                                 <option value="{{ $t }}" {{ (isset($tahunSelected) && $tahunSelected == $t) ? 'selected' : '' }}>
                                     Tahun {{ $t }}
@@ -147,15 +272,14 @@
                     @endif
                 </form>
 
-                <!-- Tombol Cetak PDF & Excel -->
                 <div class="d-flex gap-2">
                     <a href="{{ route('admin.kabupaten.rekapitulasi.pdf', ['tahun' => $tahunSelected, 'triwulan' => $triwulanSelected]) }}" 
-                       class="btn btn-pdf-soft d-flex align-items-center gap-2" target="_blank">
+                       class="btn btn-pdf-soft d-flex align-items-center gap-2 shadow-sm" target="_blank">
                         <i class="fa-solid fa-file-pdf fs-6"></i>
                         <span>Cetak PDF</span>
                     </a>
                     <a href="{{ route('admin.kabupaten.rekapitulasi.excel', ['tahun' => $tahunSelected, 'triwulan' => $triwulanSelected]) }}" 
-                       class="btn btn-excel-soft d-flex align-items-center gap-2">
+                       class="btn btn-excel-soft d-flex align-items-center gap-2 shadow-sm">
                         <i class="fa-solid fa-file-excel fs-6"></i>
                         <span>Export Excel</span>
                     </a>
@@ -166,7 +290,15 @@
     </div>
 
     <!-- Tabel Rekapitulasi -->
-    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+    <div class="card card-dashboard-modern border-0 shadow-sm rounded-4 overflow-hidden mb-4" style="border-left: 5px solid #10b981 !important;">
+        <div class="card-header bg-white border-0 py-3 px-4 d-flex align-items-center justify-content-between">
+            <h6 class="fw-bold text-dark mb-0 d-flex align-items-center">
+                <i class="fa-solid fa-table-list text-success me-2 fs-5"></i>Matriks Rekapitulasi Populasi Ternak
+            </h6>
+            <span class="badge bg-success bg-opacity-10 text-success fw-bold px-3 py-1.5 rounded-pill fs-8">
+                <i class="fa-solid fa-circle-check me-1"></i>Laporan Resmi
+            </span>
+        </div>
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover align-middle table-rekap mb-0">
@@ -180,22 +312,18 @@
                         </tr>
                     </thead>
                     <tbody class="border-top-0">
-                        @php 
-                            $grandTotals = array_fill_keys($jenisTernaks->pluck('id')->toArray(), 0);
-                        @endphp
-
                         @forelse($rekap as $index => $kc)
                             <tr>
                                 <td class="text-center fw-semibold text-secondary px-2">
                                     {{ $loop->iteration }}
                                 </td>
                                 <td class="fw-bold text-dark px-3">
+                                    <i class="fa-solid fa-building-flag text-success opacity-75 me-2"></i>
                                     {{ strtoupper($kc->nama_kecamatan) }}
                                 </td>
                                 @foreach($jenisTernaks as $jt)
                                     @php
                                         $jumlah = $kc->populasiKecamatan->where('jenis_ternak_id', $jt->id)->sum('jumlah');
-                                        $grandTotals[$jt->id] += $jumlah;
                                     @endphp
                                     <td class="text-end px-3 fw-semibold text-secondary">
                                         {{ number_format($jumlah, 0, ',', '.') }}
@@ -205,14 +333,13 @@
                         @empty
                             <tr>
                                 <td colspan="{{ count($jenisTernaks) + 2 }}" class="text-center py-5 text-muted bg-white">
-                                    <i class="fa-solid fa-inbox fa-3x mb-3 text-secondary opacity-50"></i>
+                                    <i class="fa-solid fa-inbox fa-3x mb-3 text-success opacity-25"></i>
                                     <p class="mb-0 fw-semibold">Data rekapitulasi populasi tidak ditemukan.</p>
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
                     
-                    <!-- Footer Total Kabupaten -->
                     <tfoot class="tfoot-total">
                         <tr>
                             <td colspan="2" class="text-center text-uppercase py-3 px-3">

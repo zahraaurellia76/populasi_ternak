@@ -4,7 +4,52 @@
 
 @section('content')
 <style>
-    /* Gradient Stat Card */
+    /* Stat Cards Gradasi Khas Dashboard */
+    .card-stat-amber {
+        background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+        color: #ffffff;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-stat-amber:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(217, 119, 6, 0.25) !important;
+    }
+
+    .card-stat-blue {
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        color: #ffffff;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-stat-blue:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(2, 132, 199, 0.25) !important;
+    }
+
+    .card-stat-emerald {
+        background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+        color: #ffffff;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-stat-emerald:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(16, 185, 129, 0.25) !important;
+    }
+
+    .icon-box-stat {
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.2) !important;
+        backdrop-filter: blur(8px);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.35rem;
+        color: #ffffff !important;
+        flex-shrink: 0;
+    }
+
+    /* Gradient Stat Card Hasil Prediksi */
     .stat-card-gradient {
         background: linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%);
         border: 1px solid #dcfce7 !important;
@@ -14,8 +59,8 @@
     .formula-box {
         background-color: #ffffff;
         border-left: 4px solid #10b981;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
     }
 
     /* Badge Indicators */
@@ -28,39 +73,116 @@
         border-radius: 6px;
     }
 
-    /* Custom Form Filter Inputs (Uniform Green Border & Focus) */
+    /* Custom Form Filter Inputs */
     .form-select-custom {
-        border: 1px solid #10b981 !important;
-        border-radius: 8px;
+        border: 1.5px solid #a7f3d0 !important;
+        border-radius: 10px;
+        transition: all 0.2s ease-in-out;
     }
     
     .form-select-custom:focus {
-        border-color: #047857 !important;
+        border-color: #10b981 !important;
         box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.2) !important;
+    }
+
+    /* Card Elevation Khas Dashboard */
+    .card-dashboard-modern {
+        background-color: #ffffff;
+        border: 1px solid rgba(16, 185, 129, 0.12) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-dashboard-modern:hover {
+        box-shadow: 0 10px 25px rgba(4, 120, 87, 0.08) !important;
     }
 </style>
 
 <div class="container-fluid py-3">
 
     <!-- Header Judul -->
-    <div class="mb-4">
-        <h3 class="fw-bold mb-1" style="color: #047857; letter-spacing: -0.5px;">
-            <i class="fa-solid fa-chart-line text-warning me-2"></i>Prediksi Populasi Ternak (Regresi Linier)
-        </h3>
-        <p class="text-muted small mb-0">Estimasi dan proyeksi populasi ternak periode mendatang menggunakan metode regresi linier</p>
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+        <div>
+            <h3 class="fw-bold mb-1" style="color: #047857; letter-spacing: -0.5px;">
+                <i class="fa-solid fa-chart-line text-warning me-2"></i>Prediksi Populasi Ternak (Regresi Linier)
+            </h3>
+            <p class="text-muted small mb-0">Estimasi dan proyeksi populasi ternak periode mendatang menggunakan metode regresi linier</p>
+        </div>
+        <div>
+            <span class="badge rounded-pill bg-white text-dark shadow-sm px-3 py-2 border fw-semibold fs-7">
+                <i class="fa-solid fa-square-root-variable text-success me-2"></i>Model: <strong>Simple Linear Regression</strong>
+            </span>
+        </div>
+    </div>
+
+    @php
+        $selectedJtNama = $jenisTernaks->firstWhere('id', $jenisTernakId)->nama_ternak ?? 'Ternak';
+        $selectedKcNama = $kecamatanId ? ($kecamatans->firstWhere('id', $kecamatanId)->nama_kecamatan ?? 'Kecamatan') : 'Kabupaten Kediri';
+    @endphp
+
+    <!-- Stat Cards Gradasi Khas Dashboard Admin -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 card-stat-amber p-1 h-100">
+                <div class="card-body p-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-uppercase small fw-bold text-white-50 tracking-wider mb-1">Komoditas Ternak</div>
+                        <h3 class="fw-bold my-0" style="letter-spacing: -0.5px;">
+                            {{ $selectedJtNama }}
+                        </h3>
+                    </div>
+                    <div class="icon-box-stat">
+                        <i class="fa-solid fa-paw"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 card-stat-blue p-1 h-100">
+                <div class="card-body p-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-uppercase small fw-bold text-white-50 tracking-wider mb-1">Cakupan Wilayah</div>
+                        <h3 class="fw-bold my-0" style="letter-spacing: -0.5px;">
+                            {{ strtoupper($selectedKcNama) }}
+                        </h3>
+                    </div>
+                    <div class="icon-box-stat">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 card-stat-emerald p-1 h-100">
+                <div class="card-body p-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-uppercase small fw-bold text-white-50 tracking-wider mb-1">Status Validasi Data</div>
+                        <h3 class="fw-bold my-0" style="letter-spacing: -0.5px;">
+                            {{ $n }} <span class="fs-7 fw-normal text-white-50">Periode {{ $n >= 2 ? '(Valid)' : '(Kurang)' }}</span>
+                        </h3>
+                    </div>
+                    <div class="icon-box-stat">
+                        <i class="fa-solid fa-database"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Filter Form Card -->
-    <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white">
+    <div class="card card-dashboard-modern border-0 shadow-sm rounded-4 mb-4 bg-white">
         <div class="card-body p-4">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <i class="fa-solid fa-sliders text-success fs-5"></i>
+                <h6 class="fw-bold mb-0 text-dark">Parameter Prediksi Regresi</h6>
+            </div>
             <form method="GET" action="{{ url('/admin-kabupaten/prediksi') }}" class="row g-3 align-items-center">
                 
-                <!-- Pilih Jenis Ternak -->
                 <div class="col-md-6">
                     <label class="form-label fw-bold small mb-1" style="color: #047857;">
                         <i class="fa-solid fa-paw me-1"></i>Pilih Jenis Ternak
                     </label>
-                    <select name="jenis_ternak_id" class="form-select form-select-custom text-dark fw-semibold fs-7" onchange="this.form.submit()">
+                    <select name="jenis_ternak_id" class="form-select form-select-custom text-dark fw-semibold fs-7 py-2" onchange="this.form.submit()">
                         @foreach($jenisTernaks as $jt)
                             <option value="{{ $jt->id }}" {{ $jenisTernakId == $jt->id ? 'selected' : '' }}>
                                 {{ $jt->nama_ternak }}
@@ -69,12 +191,11 @@
                     </select>
                 </div>
 
-                <!-- Filter Spesifik Kecamatan (Disamakan Style & Warnanya) -->
                 <div class="col-md-6">
                     <label class="form-label fw-bold small mb-1" style="color: #047857;">
                         <i class="fa-solid fa-location-dot me-1"></i>Filter Spesifik Kecamatan (Opsional)
                     </label>
-                    <select name="kecamatan_id" class="form-select form-select-custom text-dark fw-semibold fs-7" onchange="this.form.submit()">
+                    <select name="kecamatan_id" class="form-select form-select-custom text-dark fw-semibold fs-7 py-2" onchange="this.form.submit()">
                         <option value="">-- Semua Kecamatan (Skala Kabupaten) --</option>
                         @foreach($kecamatans as $kc)
                             <option value="{{ $kc->id }}" {{ $kecamatanId == $kc->id ? 'selected' : '' }}>
@@ -92,15 +213,18 @@
     <div class="row g-4">
         <!-- Left: Hasil Prediksi -->
         <div class="col-lg-5">
-            <div class="card border-0 shadow-sm rounded-4 h-100 stat-card-gradient">
-                <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0">
+            <div class="card border-0 shadow-sm rounded-4 h-100 stat-card-gradient card-dashboard-modern">
+                <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0 d-flex align-items-center justify-content-between">
                     <h6 class="fw-bold text-dark mb-0">
-                        <i class="fa-solid fa-calculator text-success me-2"></i>Hasil Prediksi Regresi Linier
+                        <i class="fa-solid fa-calculator text-success me-2"></i>Hasil Prediksi Regresi
                     </h6>
+                    <span class="badge bg-success bg-opacity-10 text-success fw-bold px-2.5 py-1 rounded-pill fs-8">
+                        Estimation
+                    </span>
                 </div>
                 <div class="card-body d-flex flex-column justify-content-center text-center p-4">
                     @if($n >= 2 && !is_null($prediksi))
-                        <span class="text-muted fw-semibold small text-uppercase tracking-wider">Estimasi Total Populasi Periode Berikutnya</span>
+                        <span class="text-muted fw-semibold small text-uppercase tracking-wider">Estimasi Total Populasi Periode Berikutnya (N+1)</span>
                         <h1 class="display-4 fw-bold my-3" style="color: #047857; letter-spacing: -1px;">
                             {{ number_format($prediksi, 0, ',', '.') }} <span class="fs-5 text-dark fw-normal">ekor</span>
                         </h1>
@@ -120,11 +244,11 @@
                                     <span class="badge-stat">{{ $n }}</span>
                                 </div>
                                 <div class="col-12 d-flex justify-content-between align-items-center small py-1">
-                                    <span class="text-muted">Konstanta (a):</span>
+                                    <span class="text-muted">Konstanta Intersept (a):</span>
                                     <span class="fw-semibold text-dark">{{ round($a, 2) }}</span>
                                 </div>
                                 <div class="col-12 d-flex justify-content-between align-items-center small py-1">
-                                    <span class="text-muted">Koefisien Regresi (b):</span>
+                                    <span class="text-muted">Koefisien Kemiringan (b):</span>
                                     <span class="fw-semibold {{ $b >= 0 ? 'text-success' : 'text-danger' }}">{{ round($b, 2) }}</span>
                                 </div>
                             </div>
@@ -141,11 +265,14 @@
 
         <!-- Right: Grafik Tren & Prediksi -->
         <div class="col-lg-7">
-            <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
-                <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0">
+            <div class="card card-dashboard-modern border-0 shadow-sm rounded-4 h-100 bg-white" style="border-left: 5px solid #10b981 !important;">
+                <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0 d-flex align-items-center justify-content-between">
                     <h6 class="fw-bold text-dark mb-0">
                         <i class="fa-solid fa-chart-area text-success me-2"></i>Grafik Tren Histori & Proyeksi
                     </h6>
+                    <span class="badge bg-light text-secondary border px-3 py-1 rounded-pill small fw-semibold">
+                        Line Chart Analysis
+                    </span>
                 </div>
                 <div class="card-body d-flex flex-column justify-content-between p-4">
                     @if($n >= 2)
@@ -153,7 +280,6 @@
                             <canvas id="prediksiChart"></canvas>
                         </div>
 
-                        <!-- Keterangan Jenis Garis Grafik -->
                         <div class="d-flex flex-wrap justify-content-center align-items-center gap-4 mt-3 pt-3 border-top">
                             <div class="d-flex align-items-center gap-2">
                                 <span style="width: 22px; height: 3px; background-color: #10b981; display: inline-block; border-radius: 2px;"></span>
@@ -242,6 +368,7 @@
                     },
                     tooltip: {
                         padding: 12,
+                        backgroundColor: '#047857',
                         cornerRadius: 8,
                         callbacks: {
                             label: function(context) {
