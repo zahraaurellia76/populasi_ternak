@@ -235,6 +235,7 @@ class AdminController extends Controller
         ]);
 
         PopulasiKecamatan::create([
+            'user_id'         => Auth::id(), // <-- TAMBAHKAN BARIS INI
             'kecamatan_id'    => $request->kecamatan_id,
             'jenis_ternak_id' => $request->jenis_ternak_id,
             'tahun'           => $request->tahun,
@@ -259,6 +260,7 @@ class AdminController extends Controller
         ]);
 
         $data->update([
+            'user_id'         => Auth::id(), // <-- TAMBAHKAN BARIS INI
             'kecamatan_id'    => $request->kecamatan_id,
             'jenis_ternak_id' => $request->jenis_ternak_id,
             'tahun'           => $request->tahun,
