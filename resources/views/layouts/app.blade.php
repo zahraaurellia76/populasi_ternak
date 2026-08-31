@@ -151,9 +151,6 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link active text-white" href="{{ route('public.index') }}">Beranda</a>
-                    </li>
                     <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
                         @auth
                             <a class="btn btn-warning btn-sm px-3 fw-bold" href="{{ route('admin.prediksi') }}">
@@ -161,7 +158,7 @@
                             </a>
                         @else
                             <a class="btn btn-outline-light btn-sm px-3" href="{{ route('login') }}">
-                                <i class="fa-solid fa-right-to-bracket me-1"></i> Login Petugas
+                                <i class="fa-solid fa-right-to-bracket me-1"></i> Login
                             </a>
                         @endauth
                     </li>

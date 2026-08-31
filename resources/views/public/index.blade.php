@@ -170,7 +170,7 @@
             <i class="fa-solid fa-chart-line me-1"></i> Portal Informasi Resmi Publik
         </span>
         <h1 class="fw-bold display-5 mb-2" style="letter-spacing: -0.8px;">
-            <i class="fa-solid fa-cow me-2 text-warning"></i>Data Populasi Ternak Kabupaten Kediri
+            Data Populasi Ternak Kabupaten Kediri
         </h1>
         <p class="lead fs-6 text-white-50 mb-0 mx-auto" style="max-width: 700px;">
             Laporan rekapitulasi data dan statistik perkembangan populasi ternak resmi per kecamatan di wilayah Kabupaten Kediri.

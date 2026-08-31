@@ -170,12 +170,20 @@
     @php 
         $grandTotals = array_fill_keys($jenisTernaks->pluck('id')->toArray(), 0);
         $totalEkorKeseluruhan = 0;
-        foreach($rekap as $kc) {
-            foreach($jenisTernaks as $jt) {
+        
+        $minMaxPerJenis = [];
+        foreach($jenisTernaks as $jt) {
+            $semuaJumlah = [];
+            foreach($rekap as $kc) {
                 $jml = $kc->populasiKecamatan->where('jenis_ternak_id', $jt->id)->sum('jumlah');
+                $semuaJumlah[] = $jml;
                 $grandTotals[$jt->id] += $jml;
                 $totalEkorKeseluruhan += $jml;
             }
+            $minMaxPerJenis[$jt->id] = [
+                'min' => count($semuaJumlah) > 0 ? min($semuaJumlah) : 0,
+                'max' => count($semuaJumlah) > 0 ? max($semuaJumlah) : 0,
+            ];
         }
     @endphp
 
@@ -324,8 +332,20 @@
                                 @foreach($jenisTernaks as $jt)
                                     @php
                                         $jumlah = $kc->populasiKecamatan->where('jenis_ternak_id', $jt->id)->sum('jumlah');
+                                        $minVal = $minMaxPerJenis[$jt->id]['min'] ?? 0;
+                                        $maxVal = $minMaxPerJenis[$jt->id]['max'] ?? 0;
+                                        
+                                        // Tentukan warna: Merah (terendah) & Hijau (tertinggi) jika nilainya bervariasi
+                                        $cellStyle = 'text-secondary';
+                                        if ($minVal !== $maxVal) {
+                                            if ($jumlah == $minVal) {
+                                                $cellStyle = 'bg-danger bg-opacity-10 text-danger fw-bold';
+                                            } elseif ($jumlah == $maxVal) {
+                                                $cellStyle = 'bg-success bg-opacity-10 text-success fw-bold';
+                                            }
+                                        }
                                     @endphp
-                                    <td class="text-end px-3 fw-semibold text-secondary">
+                                    <td class="text-end px-3 fw-semibold {{ $cellStyle }}">
                                         {{ number_format($jumlah, 0, ',', '.') }}
                                     </td>
                                 @endforeach

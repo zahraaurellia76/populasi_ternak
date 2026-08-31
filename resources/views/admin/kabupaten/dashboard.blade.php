@@ -156,7 +156,7 @@
                 <i class="fa-solid fa-shield-halved me-1 text-warning"></i> Admin Kabupaten Portal
             </span>
             <h3 class="fw-bold mb-1" style="letter-spacing: -0.5px;">
-                Selamat Datang, Administrator!
+                Selamat Datang, {{ Auth::user()->nama ?? 'Administrator' }}!
             </h3>
             <p class="text-white-50 small mb-0">Pusat kendali & integrasi data statistik populasi ternak Kabupaten Kediri</p>
         </div>
@@ -168,15 +168,23 @@
     </div>
 
     @php 
-        // Hitung Grand Total Keseluruhan untuk Stat Card
+        // Hitung Grand Total Keseluruhan & Min/Max per Jenis Ternak
         $grandTotalsByJenis = array_fill_keys($jenisTernaks->pluck('id')->toArray(), 0);
         $totalEkorKeseluruhan = 0;
-        foreach($rekap as $kc) {
-            foreach($jenisTernaks as $jt) {
+        
+        $minMaxPerJenis = [];
+        foreach($jenisTernaks as $jt) {
+            $semuaJumlah = [];
+            foreach($rekap as $kc) {
                 $jml = $kc->populasiKecamatan->where('jenis_ternak_id', $jt->id)->sum('jumlah');
+                $semuaJumlah[] = $jml;
                 $grandTotalsByJenis[$jt->id] += $jml;
                 $totalEkorKeseluruhan += $jml;
             }
+            $minMaxPerJenis[$jt->id] = [
+                'min' => count($semuaJumlah) > 0 ? min($semuaJumlah) : 0,
+                'max' => count($semuaJumlah) > 0 ? max($semuaJumlah) : 0,
+            ];
         }
     @endphp
 
@@ -284,8 +292,20 @@
                                 @foreach($jenisTernaks as $jt)
                                     @php
                                         $jumlah = $kc->populasiKecamatan->where('jenis_ternak_id', $jt->id)->sum('jumlah');
+                                        $minVal = $minMaxPerJenis[$jt->id]['min'] ?? 0;
+                                        $maxVal = $minMaxPerJenis[$jt->id]['max'] ?? 0;
+                                        
+                                        // Tentukan warna berdasarkan nilai terendah (merah) dan tertinggi (hijau)
+                                        $cellStyle = 'text-secondary';
+                                        if ($minVal !== $maxVal) {
+                                            if ($jumlah == $minVal) {
+                                                $cellStyle = 'bg-danger bg-opacity-10 text-danger fw-bold';
+                                            } elseif ($jumlah == $maxVal) {
+                                                $cellStyle = 'bg-success bg-opacity-10 text-success fw-bold';
+                                            }
+                                        }
                                     @endphp
-                                    <td class="text-end px-3 fw-semibold text-secondary">
+                                    <td class="text-end px-3 fw-semibold {{ $cellStyle }}">
                                         {{ number_format($jumlah, 0, ',', '.') }}
                                     </td>
                                 @endforeach

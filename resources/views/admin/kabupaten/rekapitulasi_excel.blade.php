@@ -3,7 +3,6 @@
       xmlns="http://www.w3.org/TR/REC-html40">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <!-- Guarantees Gridlines in Excel without triggering Laravel Blade Component parser -->
     <!--[if gte mso 9]>
     <xml>
         <@x:ExcelWorkbook>
@@ -13,6 +12,10 @@
                     <@x:WorksheetOptions>
                         <@x:Print>
                             <@x:ValidPrinterInfo/>
+                            <@x:Orientation>Landscape</@x:Orientation>
+                            <@x:FitToPage/>
+                            <@x:FitWidth>1</@x:FitWidth>
+                            <@x:FitHeight>0</@x:FitHeight>
                         </@x:Print>
                         <@x:ShowGridlines/>
                     </@x:WorksheetOptions>
@@ -22,40 +25,62 @@
     </xml>
     <![endif]-->
     <style>
-        table { border-collapse: collapse; }
-        th, td { border: 1px solid #cccccc; vertical-align: middle; }
-        .th-header { background-color: #113d2f; color: #ffffff; font-weight: bold; text-align: center; }
-        .td-total { background-color: #d1e7dd; font-weight: bold; }
+        @page {
+            size: A4 landscape;
+            margin: 0.5cm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 8pt;
+        }
+        table { 
+            border-collapse: collapse; 
+            width: 100%; 
+            table-layout: fixed;
+        }
+        th, td { 
+            border: 1px solid #cccccc; 
+            vertical-align: middle; 
+            padding: 3px 2px; 
+            overflow: hidden;
+            word-wrap: break-word;
+        }
+        .th-header { 
+            background-color: #113d2f; 
+            color: #ffffff; 
+            font-weight: bold; 
+            text-align: center; 
+            font-size: 7.5pt;
+        }
+        .td-total { 
+            background-color: #d1e7dd; 
+            font-weight: bold; 
+        }
     </style>
 </head>
 <body>
     <table>
         <thead>
-            <!-- Baris 1: Judul Utama -->
-            <tr style="height: 30px;">
-                <th colspan="{{ count($jenisTernaks) + 2 }}" 
-                    style="font-size: 14pt; font-weight: bold; text-align: center; border: none;">
-                    REKAPITULASI DATA POPULASI TERNAK KABUPATEN KEDIRI
-                </th>
-            </tr>
-            <!-- Baris 2: Sub-Judul Triwulan & Tahun -->
             <tr style="height: 25px;">
                 <th colspan="{{ count($jenisTernaks) + 2 }}" 
                     style="font-size: 12pt; font-weight: bold; text-align: center; border: none;">
+                    REKAPITULASI DATA POPULASI TERNAK KABUPATEN KEDIRI
+                </th>
+            </tr>
+            <tr style="height: 20px;">
+                <th colspan="{{ count($jenisTernaks) + 2 }}" 
+                    style="font-size: 10pt; font-weight: bold; text-align: center; border: none;">
                     {{ $triwulanSelected ? 'TRIWULAN ' . $triwulanSelected : '' }} TAHUN {{ $tahunSelected }}
                 </th>
             </tr>
-            <!-- Baris Kosong Pemisah -->
-            <tr style="height: 15px;">
+            <tr style="height: 10px;">
                 <td colspan="{{ count($jenisTernaks) + 2 }}" style="border: none;"></td>
             </tr>
-            
-            <!-- Header Kolom Tabel -->
-            <tr style="height: 30px;">
-                <th class="th-header" style="width: 40px;">No</th>
-                <th class="th-header" style="width: 180px;">Nama Kecamatan</th>
+            <tr style="height: 28px;">
+                <th class="th-header" style="width: 25px;">No</th>
+                <th class="th-header" style="width: 110px;">Nama Kecamatan</th>
                 @foreach($jenisTernaks as $jt)
-                    <th class="th-header" style="width: 120px;">{{ $jt->nama_ternak }}</th>
+                    <th class="th-header" style="width: 55px;">{{ $jt->nama_ternak }}</th>
                 @endforeach
             </tr>
         </thead>
@@ -65,24 +90,24 @@
             @endphp
             
             @foreach($rekap as $index => $kc)
-                <tr style="height: 22px;">
+                <tr style="height: 20px;">
                     <td style="text-align: center;">{{ $loop->iteration }}</td>
-                    <td>{{ strtoupper($kc->nama_kecamatan) }}</td>
+                    <td style="font-size: 7.5pt;">{{ strtoupper($kc->nama_kecamatan) }}</td>
                     @foreach($jenisTernaks as $jt)
                         @php
                             $jumlah = $kc->populasiKecamatan->where('jenis_ternak_id', $jt->id)->sum('jumlah');
                             $grandTotals[$jt->id] += $jumlah;
                         @endphp
-                        <td style="text-align: right; mso-number-format:'\#\,\#\#0';">{{ $jumlah }}</td>
+                        <td style="text-align: right; font-size: 7.5pt; mso-number-format:'\#\,\#\#0';">{{ $jumlah }}</td>
                     @endforeach
                 </tr>
             @endforeach
         </tbody>
         <tfoot>
-            <tr style="height: 25px;">
+            <tr style="height: 22px;">
                 <td colspan="2" class="td-total" style="text-align: center;">TOTAL KABUPATEN KEDIRI</td>
                 @foreach($jenisTernaks as $jt)
-                    <td class="td-total" style="text-align: right; mso-number-format:'\#\,\#\#0';">
+                    <td class="td-total" style="text-align: right; font-size: 7.5pt; mso-number-format:'\#\,\#\#0';">
                         {{ $grandTotals[$jt->id] ?? 0 }}
                     </td>
                 @endforeach

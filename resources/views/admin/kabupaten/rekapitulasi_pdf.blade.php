@@ -1,17 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
     <title>Rekapitulasi Data Populasi Ternak Tahun {{ $tahunSelected }}</title>
     <style>
-        body { font-family: sans-serif; font-size: 11pt; }
-        .header { text-align: center; margin-bottom: 20px; }
-        .header h2, .header h4 { margin: 2px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #333; padding: 6px 8px; }
-        th { background-color: #113d2f; color: #fff; text-align: center; }
+        /* Mengatur ukuran kertas Landscape agar kolom muat kesamping */
+        @page {
+            size: A4 landscape;
+            margin: 10mm 8mm;
+        }
+        body { 
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+            font-size: 8pt; 
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 10px; 
+        }
+        .header h2 { 
+            font-size: 13pt; 
+            margin: 0 0 3px 0; 
+            color: #113d2f;
+            text-transform: uppercase;
+        }
+        .header h4 { 
+            font-size: 9pt; 
+            margin: 0; 
+            color: #555; 
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            table-layout: fixed; /* Memaksa lebar tabel proporsional */
+        }
+        th, td { 
+            border: 1px solid #bbb; 
+            padding: 4px 3px; 
+            overflow: hidden; 
+            word-wrap: break-word; 
+        }
+        th { 
+            background-color: #113d2f; 
+            color: #fff; 
+            text-align: center; 
+            font-size: 7.5pt; 
+            font-weight: bold;
+            line-height: 1.1;
+        }
+        td { 
+            font-size: 8pt; 
+        }
         .text-right { text-align: right; }
         .text-center { text-align: center; }
-        .total-row { background-color: #d1e7dd; font-weight: bold; }
+        .total-row { 
+            background-color: #d1e7dd; 
+            font-weight: bold; 
+        }
     </style>
 </head>
 <body>
@@ -27,8 +74,8 @@
     <table>
         <thead>
             <tr>
-                <th style="width: 30px;">No</th>
-                <th>Nama Kecamatan</th>
+                <th style="width: 25px;">No</th>
+                <th style="width: 85px;">Nama Kecamatan</th>
                 @foreach($jenisTernaks as $jt)
                     <th>{{ $jt->nama_ternak }}</th>
                 @endforeach

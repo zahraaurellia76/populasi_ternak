@@ -134,7 +134,7 @@
                     <li class="nav-item">
                         <a class="nav-link-custom {{ Request::is('admin-kecamatan/prediksi*') ? 'active' : '' }}" 
                            href="{{ url('/admin-kecamatan/prediksi') }}">
-                           Regresi / Prediksi
+                           Prediksi
                         </a>
                     </li>
                 </ul>

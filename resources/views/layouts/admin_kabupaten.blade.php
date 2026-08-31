@@ -54,6 +54,34 @@
             font-weight: 600;
         }
 
+        /* Styling tambahan untuk Dropdown */
+        .dropdown-menu {
+            background-color: var(--bg-navbar);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+
+        .dropdown-item {
+            color: rgba(255, 255, 255, 0.75);
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.5rem 0.85rem;
+            border-radius: 6px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .dropdown-item:hover, .dropdown-item:focus {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .dropdown-item.active {
+            background-color: var(--emerald-accent);
+            color: #ffffff !important;
+        }
+
         .user-badge {
             background-color: rgba(255, 255, 255, 0.12);
             color: #ffffff;
@@ -111,7 +139,7 @@
 
             <div class="collapse navbar-collapse" id="navMenu">
                 <!-- Menu Navigasi Utama (Di Tengah: mx-auto) -->
-                <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-1 text-center">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-1 text-center align-items-lg-center">
                     <li class="nav-item">
                         <a class="nav-link-custom {{ Request::routeIs('admin.kabupaten.dashboard') ? 'active' : '' }}" 
                            href="{{ route('admin.kabupaten.dashboard') }}">
@@ -133,26 +161,41 @@
                     <li class="nav-item">
                         <a class="nav-link-custom {{ Request::routeIs('admin.kabupaten.prediksi*') ? 'active' : '' }}" 
                            href="{{ route('admin.kabupaten.prediksi') }}">
-                           Regresi / Prediksi
+                           Prediksi
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link-custom {{ Request::routeIs('admin.kabupaten.kecamatan*') ? 'active' : '' }}" 
-                           href="{{ route('admin.kabupaten.kecamatan.index') }}">
-                           Kelola Kecamatan
+
+                    <!-- Menu Dropdown "Kelola" -->
+                    <li class="nav-item dropdown">
+                        @php
+                            $isKelolaActive = Request::routeIs('admin.kabupaten.kecamatan*') || 
+                                              Request::routeIs('admin.kabupaten.jenis_ternak*') || 
+                                              Request::routeIs('admin.kabupaten.users*');
+                        @endphp
+                        <a class="nav-link-custom dropdown-toggle {{ $isKelolaActive ? 'active' : '' }}" 
+                           href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Kelola
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link-custom {{ Request::routeIs('admin.kabupaten.jenis_ternak*') ? 'active' : '' }}" 
-                           href="{{ route('admin.kabupaten.jenis_ternak.index') }}">
-                           Jenis Ternak
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link-custom {{ Request::routeIs('admin.kabupaten.users*') ? 'active' : '' }}" 
-                           href="{{ route('admin.kabupaten.users.index') }}">
-                           Kelola User
-                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item {{ Request::routeIs('admin.kabupaten.kecamatan*') ? 'active' : '' }}" 
+                                   href="{{ route('admin.kabupaten.kecamatan.index') }}">
+                                   Kecamatan
+                               </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item {{ Request::routeIs('admin.kabupaten.jenis_ternak*') ? 'active' : '' }}" 
+                                   href="{{ route('admin.kabupaten.jenis_ternak.index') }}">
+                                   Jenis Ternak
+                               </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item {{ Request::routeIs('admin.kabupaten.users*') ? 'active' : '' }}" 
+                                   href="{{ route('admin.kabupaten.users.index') }}">
+                                   User
+                               </a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
 

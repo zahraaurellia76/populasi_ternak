@@ -304,9 +304,6 @@
             <h6 class="fw-bold text-dark mb-0 d-flex align-items-center">
                 <i class="fa-solid fa-table-list text-success me-2 fs-5"></i>Daftar Master Data Populasi Ternak
             </h6>
-            <span class="badge bg-success bg-opacity-10 text-success fw-bold px-3 py-1.5 rounded-pill fs-8">
-                <i class="fa-solid fa-database me-1"></i>Simnak Database
-            </span>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
