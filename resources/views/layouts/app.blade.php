@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Sistem Informasi Populasi Ternak Kabupaten Kediri')</title>
     
-    <!-- Favicon Logo SIMDA -->
-    <link rel="icon" type="image/png" href="{{ asset('images/SIMDA.png') }}">
+    <!-- Favicon Logo simnak -->
+    <link rel="icon" type="image/png" href="{{ asset('images/simnak.png') }}">
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -148,7 +148,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark main-navbar sticky-top shadow-sm">
         <div class="container">
             <a class="navbar-brand fw-bold text-white d-flex align-items-center gap-2" href="{{ route('public.index') }}">
-                <img src="{{ asset('images/SIMDA.png') }}" alt="Logo SIMDA" style="width: 34px; height: 34px; object-fit: contain;">
+                <img src="{{ asset('images/simnak.png') }}" alt="Logo simnak" style="width: 34px; height: 34px; object-fit: contain;">
                 <span>Simnak Kediri</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -177,7 +177,7 @@
             <div class="row align-items-start">
                 <div class="col-lg-7 col-md-7 mb-3 mb-md-0">
                     <div class="footer-brand mb-2 d-flex align-items-center gap-2">
-                        <img src="{{ asset('images/SIMDA.png') }}" alt="Logo SIMDA" style="width: 30px; height: 30px; object-fit: contain;">
+                        <img src="{{ asset('images/simnak.png') }}" alt="Logo simnak" style="width: 30px; height: 30px; object-fit: contain;">
                         <span>Simnak Kediri</span>
                     </div>
                     <p class="footer-description mb-0">
