@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Sistem Informasi Populasi Ternak Kabupaten Kediri')</title>
+    
+    <!-- Favicon Logo SIMDA -->
+    <link rel="icon" type="image/png" href="{{ asset('images/SIMDA.png') }}">
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome Icons -->
@@ -143,8 +147,9 @@
     <!-- Header / Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark main-navbar sticky-top shadow-sm">
         <div class="container">
-            <a class="navbar-brand fw-bold text-white" href="{{ route('public.index') }}">
-                <i class="fa-solid fa-cow me-2 text-warning"></i> Simnak Kediri
+            <a class="navbar-brand fw-bold text-white d-flex align-items-center gap-2" href="{{ route('public.index') }}">
+                <img src="{{ asset('images/SIMDA.png') }}" alt="Logo SIMDA" style="width: 34px; height: 34px; object-fit: contain;">
+                <span>Simnak Kediri</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -152,15 +157,9 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
-                        @auth
-                            <a class="btn btn-warning btn-sm px-3 fw-bold" href="{{ route('admin.prediksi') }}">
-                                <i class="fa-solid fa-gauge me-1"></i> Dashboard Admin
-                            </a>
-                        @else
-                            <a class="btn btn-outline-light btn-sm px-3" href="{{ route('login') }}">
-                                <i class="fa-solid fa-right-to-bracket me-1"></i> Login
-                            </a>
-                        @endauth
+                        <a class="btn btn-outline-light btn-sm px-3" href="{{ route('login') }}">
+                            <i class="fa-solid fa-right-to-bracket me-1"></i> Login
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -177,8 +176,8 @@
         <div class="container py-4">
             <div class="row align-items-start">
                 <div class="col-lg-7 col-md-7 mb-3 mb-md-0">
-                    <div class="footer-brand mb-2">
-                        <i class="fa-solid fa-cow me-2 text-warning"></i>
+                    <div class="footer-brand mb-2 d-flex align-items-center gap-2">
+                        <img src="{{ asset('images/SIMDA.png') }}" alt="Logo SIMDA" style="width: 30px; height: 30px; object-fit: contain;">
                         <span>Simnak Kediri</span>
                     </div>
                     <p class="footer-description mb-0">

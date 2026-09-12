@@ -15,16 +15,6 @@
         box-shadow: 0 12px 24px rgba(16, 185, 129, 0.25) !important;
     }
 
-    .card-stat-blue {
-        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-        color: #ffffff;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .card-stat-blue:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 24px rgba(2, 132, 199, 0.25) !important;
-    }
-
     .card-stat-amber {
         background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
         color: #ffffff;
@@ -181,14 +171,22 @@
         </div>
     @endif
 
+    {{-- TAMBAHKAN ALERT ERROR DI SINI --}}
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show rounded-4 border-0 shadow-sm mb-4" role="alert" style="background-color: #fee2e2; color: #991b1b;">
+            <i class="fa-solid fa-circle-exclamation me-2 fs-5 align-middle"></i>
+            <span class="fw-semibold align-middle">{{ session('error') }}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
     @php
         $totalRecord = method_exists($populasi, 'total') ? $populasi->total() : count($populasi);
-        $totalEkorTernak = method_exists($populasi, 'items') ? collect($populasi->items())->sum('jumlah') : $populasi->sum('jumlah');
     @endphp
 
     <!-- Stat Cards Gradasi Khas Dashboard Admin -->
     <div class="row g-3 mb-4">
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="card border-0 shadow-sm rounded-4 card-stat-emerald p-1 h-100">
                 <div class="card-body p-3 d-flex justify-content-between align-items-center">
                     <div>
@@ -204,23 +202,7 @@
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm rounded-4 card-stat-blue p-1 h-100">
-                <div class="card-body p-3 d-flex justify-content-between align-items-center">
-                    <div>
-                        <div class="text-uppercase small fw-bold text-white-50 tracking-wider mb-1">Populasi (Halaman Ini)</div>
-                        <h3 class="fw-bold my-0" style="letter-spacing: -0.5px;">
-                            {{ number_format($totalEkorTernak, 0, ',', '.') }} <span class="fs-7 fw-normal text-white-50">Ekor</span>
-                        </h3>
-                    </div>
-                    <div class="icon-box-stat">
-                        <i class="fa-solid fa-paw"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="card border-0 shadow-sm rounded-4 card-stat-amber p-1 h-100">
                 <div class="card-body p-3 d-flex justify-content-between align-items-center">
                     <div>

@@ -4,41 +4,40 @@
     <meta charset="utf-8">
     <title>Rekapitulasi Data Populasi Ternak Tahun {{ $tahunSelected }}</title>
     <style>
-        /* Mengatur ukuran kertas Landscape agar kolom muat kesamping */
         @page {
             size: A4 landscape;
-            margin: 10mm 8mm;
+            margin: 6mm 5mm;
         }
         body { 
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
-            font-size: 8pt; 
+            font-size: 7pt; 
             color: #333;
             margin: 0;
             padding: 0;
         }
         .header { 
             text-align: center; 
-            margin-bottom: 10px; 
+            margin-bottom: 6px; 
         }
         .header h2 { 
-            font-size: 13pt; 
-            margin: 0 0 3px 0; 
+            font-size: 11pt; 
+            margin: 0 0 2px 0; 
             color: #113d2f;
             text-transform: uppercase;
         }
         .header h4 { 
-            font-size: 9pt; 
+            font-size: 8pt; 
             margin: 0; 
             color: #555; 
         }
         table { 
             width: 100%; 
             border-collapse: collapse; 
-            table-layout: fixed; /* Memaksa lebar tabel proporsional */
+            table-layout: fixed; 
         }
         th, td { 
             border: 1px solid #bbb; 
-            padding: 4px 3px; 
+            padding: 2px 1px; 
             overflow: hidden; 
             word-wrap: break-word; 
         }
@@ -46,12 +45,12 @@
             background-color: #113d2f; 
             color: #fff; 
             text-align: center; 
-            font-size: 7.5pt; 
+            font-size: 6.5pt; 
             font-weight: bold;
-            line-height: 1.1;
+            line-height: 1.0;
         }
         td { 
-            font-size: 8pt; 
+            font-size: 6.5pt; 
         }
         .text-right { text-align: right; }
         .text-center { text-align: center; }
@@ -74,9 +73,12 @@
     <table>
         <thead>
             <tr>
-                <th style="width: 25px;">No</th>
-                <th style="width: 85px;">Nama Kecamatan</th>
+                <!-- Gunakan persentase sempit (2.5%) untuk kolom No -->
+                <th style="width: 2.5%; padding: 2px 0;">No</th> 
+                <!-- Alokasikan 14% untuk Nama Kecamatan agar cukup lebar -->
+                <th style="width: 8%;">Nama Kecamatan</th> 
                 @foreach($jenisTernaks as $jt)
+                    <!-- Kolom sisa akan terbagi rata secara otomatis -->
                     <th>{{ $jt->nama_ternak }}</th>
                 @endforeach
             </tr>
@@ -85,7 +87,7 @@
             @php $grandTotals = array_fill_keys($jenisTernaks->pluck('id')->toArray(), 0); @endphp
             @foreach($rekap as $index => $kc)
                 <tr>
-                    <td class="text-center">{{ $loop->iteration }}</td>
+                    <td class="text-center" style="padding: 2px 0;">{{ $loop->iteration }}</td>
                     <td><strong>{{ strtoupper($kc->nama_kecamatan) }}</strong></td>
                     @foreach($jenisTernaks as $jt)
                         @php
@@ -99,7 +101,7 @@
         </tbody>
         <tfoot>
             <tr class="total-row">
-                <td colspan="2" class="text-center">TOTAL KABUPATEN KEDIRI</td>
+                <td colspan="2" class="text-center">Jumlah</td>
                 @foreach($jenisTernaks as $jt)
                     <td class="text-right">{{ number_format($grandTotals[$jt->id] ?? 0, 0, ',', '.') }}</td>
                 @endforeach

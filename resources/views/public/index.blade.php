@@ -181,13 +181,13 @@
 <div class="container my-4" style="position: relative; z-index: 10;">
 
     @php
-        // Perhitungan Total Terdata yang presisi (menangani Paginator maupun Collection)
-        $totalTerdata = 0;
+        // Menghitung jumlah jenis ternak unik atau total baris data jenis ternak yang terdata
+        $totalJenisTernak = 0;
         if (isset($populasi)) {
             if (method_exists($populasi, 'items')) {
-                $totalTerdata = collect($populasi->items())->sum('jumlah');
-            } elseif (method_exists($populasi, 'sum')) {
-                $totalTerdata = $populasi->sum('jumlah');
+                $totalJenisTernak = collect($populasi->items())->count();
+            } elseif (method_exists($populasi, 'count')) {
+                $totalJenisTernak = $populasi->count();
             }
         }
     @endphp
@@ -200,9 +200,9 @@
                     <i class="fa-solid fa-paw"></i>
                 </div>
                 <div>
-                    <div class="text-muted small fw-semibold">Total Terdata</div>
+                    <div class="text-muted small fw-semibold">Jenis Ternak Terdata</div>
                     <div class="fs-5 fw-bold text-dark">
-                        {{ number_format($totalTerdata, 0, ',', '.') }} <span class="fs-8 text-muted fw-normal">Ekor</span>
+                        {{ number_format($totalJenisTernakGlobal ?? 0, 0, ',', '.') }} <span class="fs-8 text-muted fw-normal">Jenis</span>
                     </div>
                 </div>
             </div>

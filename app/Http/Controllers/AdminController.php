@@ -20,26 +20,26 @@ class AdminController extends Controller
         $user = Auth::user();
         $wilayah = $user->kecamatan->nama_kecamatan ?? 'Kecamatan';
 
-        // Mendapatkan tahun saat ini (Tahun 2026)
-        $tahunSelected = date('Y');
-        
-        // Menentukan triwulan otomatis berdasarkan bulan saat ini (Bulan Agustus = Triwulan III)
-        $bulan = date('n'); 
-        if ($bulan <= 3) {
-            $triwulanSelected = 1;
-        } elseif ($bulan <= 6) {
-            $triwulanSelected = 2;
-        } elseif ($bulan <= 9) {
-            $triwulanSelected = 3;
-        } else {
+        $bulanIni = date('n'); // 1-12
+        $tahunIni = date('Y');
+
+        // Tentukan triwulan berjalan saat ini
+        $currentTriwulan = ceil($bulanIni / 3);
+
+        // Ambil triwulan sebelumnya (mengikuti logika Admin Kabupaten)
+        if ($currentTriwulan == 1) {
             $triwulanSelected = 4;
+            $tahunSelected = $tahunIni - 1; // Mundur ke Triwulan 4 tahun sebelumnya
+        } else {
+            $triwulanSelected = $currentTriwulan - 1; // Ambil triwulan sebelumnya
+            $tahunSelected = $tahunIni;
         }
 
         $jenisTernaks = \App\Models\JenisTernak::all();
         
         $rekapitulasi = [];
         foreach ($jenisTernaks as $jt) {
-            // Mengambil data populasi spesifik untuk kecamatan user dan triwulan/tahun terkini
+            // Mengambil data populasi spesifik untuk kecamatan user dan triwulan sebelumnya
             $populasi = \App\Models\PopulasiKecamatan::where('kecamatan_id', $user->kecamatan_id)
                 ->where('jenis_ternak_id', $jt->id)
                 ->where('tahun', $tahunSelected)
@@ -234,8 +234,21 @@ class AdminController extends Controller
             'jumlah'          => 'required|numeric|min:0',
         ]);
 
+        // Cek apakah kombinasi data sudah ada di database
+        $exists = PopulasiKecamatan::where('kecamatan_id', $request->kecamatan_id)
+            ->where('jenis_ternak_id', $request->jenis_ternak_id)
+            ->where('triwulan', $request->triwulan)
+            ->where('tahun', $request->tahun)
+            ->exists();
+
+        if ($exists) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Data populasi untuk Kecamatan, Jenis Ternak, Triwulan, dan Tahun tersebut sudah ada!');
+        }
+
         PopulasiKecamatan::create([
-            'user_id'         => Auth::id(), // <-- TAMBAHKAN BARIS INI
+            'user_id'         => Auth::id(),
             'kecamatan_id'    => $request->kecamatan_id,
             'jenis_ternak_id' => $request->jenis_ternak_id,
             'tahun'           => $request->tahun,
@@ -259,8 +272,22 @@ class AdminController extends Controller
             'jumlah'          => 'required|numeric|min:0',
         ]);
 
+        // Cek apakah kombinasi data sudah ada pada record LAIN (exclude ID saat ini)
+        $exists = PopulasiKecamatan::where('kecamatan_id', $request->kecamatan_id)
+            ->where('jenis_ternak_id', $request->jenis_ternak_id)
+            ->where('triwulan', $request->triwulan)
+            ->where('tahun', $request->tahun)
+            ->where('id', '!=', $id) // Abaikan ID yang sedang diedit
+            ->exists();
+
+        if ($exists) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Data ternak untuk Kecamatan, Jenis Ternak, Triwulan, dan Tahun tersebut sudah ada!');
+        }
+
         $data->update([
-            'user_id'         => Auth::id(), // <-- TAMBAHKAN BARIS INI
+            'user_id'         => Auth::id(),
             'kecamatan_id'    => $request->kecamatan_id,
             'jenis_ternak_id' => $request->jenis_ternak_id,
             'tahun'           => $request->tahun,
@@ -281,10 +308,12 @@ class AdminController extends Controller
     }
 
     // 3. Rekapitulasi Data Seluruh Kecamatan
+    // Method Rekapitulasi Data Seluruh Kecamatan
     public function rekapitulasi(Request $request)
     {
         $tahunSelected = $request->input('tahun', date('Y'));
-        $triwulanSelected = $request->input('triwulan');
+        // Set default triwulan ke 1 jika tidak ada parameter request
+        $triwulanSelected = $request->input('triwulan', 1);
 
         $rekap = Kecamatan::with(['populasiKecamatan' => function($q) use ($tahunSelected, $triwulanSelected) {
             $q->where('tahun', $tahunSelected);
@@ -300,10 +329,11 @@ class AdminController extends Controller
         ));
     }
 
+    // Sesuaikan juga pada method Cetak PDF
     public function cetakRekapPdf(Request $request)
     {
         $tahunSelected = $request->input('tahun', date('Y'));
-        $triwulanSelected = $request->input('triwulan');
+        $triwulanSelected = $request->input('triwulan', 1);
 
         $rekap = Kecamatan::with(['populasiKecamatan' => function($q) use ($tahunSelected, $triwulanSelected) {
             $q->where('tahun', $tahunSelected);
@@ -318,14 +348,15 @@ class AdminController extends Controller
             'rekap', 'jenisTernaks', 'tahunSelected', 'triwulanSelected'
         ))->setPaper('a4', 'landscape');
 
-        $filename = 'rekapitulasi_populasi_ternak_' . $tahunSelected . ($triwulanSelected ? '_tw' . $triwulanSelected : '') . '.pdf';
+        $filename = 'rekapitulasi_populasi_ternak_' . $tahunSelected . '_tw' . $triwulanSelected . '.pdf';
         return $pdf->download($filename);
     }
 
+    // Sesuaikan pada method Export Excel
     public function cetakRekapExcel(Request $request)
     {
         $tahunSelected = $request->input('tahun', date('Y'));
-        $triwulanSelected = $request->input('triwulan');
+        $triwulanSelected = $request->input('triwulan', 1);
 
         $rekap = Kecamatan::with(['populasiKecamatan' => function($q) use ($tahunSelected, $triwulanSelected) {
             $q->where('tahun', $tahunSelected);
@@ -336,9 +367,8 @@ class AdminController extends Controller
 
         $jenisTernaks = JenisTernak::all();
 
-        $filename = 'rekapitulasi_populasi_ternak_' . $tahunSelected . ($triwulanSelected ? '_tw' . $triwulanSelected : '') . '.xls';
+        $filename = 'rekapitulasi_populasi_ternak_' . $tahunSelected . '_tw' . $triwulanSelected . '.xls';
 
-        // Gunakan response()->view() bawaan Laravel
         return response()->view('admin.kabupaten.rekapitulasi_excel', compact(
             'rekap', 'jenisTernaks', 'tahunSelected', 'triwulanSelected'
         ))->header('Content-Type', 'application/vnd.ms-excel')

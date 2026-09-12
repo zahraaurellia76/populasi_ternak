@@ -88,11 +88,11 @@
             <form action="{{ route('admin.kecamatan.rekapitulasi') }}" method="GET" id="filterForm">
                 <div class="row align-items-end g-3">
                     <!-- Dropdown Pilih Triwulan -->
+                    <!-- Dropdown Pilih Triwulan -->
                     <div class="col-md-3">
                         <label class="form-label fw-bold small mb-1" style="color: #047857;">Pilih Triwulan</label>
                         <select name="triwulan" class="form-select form-select-custom text-dark fw-semibold fs-7" onchange="document.getElementById('filterForm').submit()">
-                            <option value="" {{ request('triwulan') == '' ? 'selected' : '' }}>-- Semua Triwulan --</option>
-                            <option value="1" {{ request('triwulan') == '1' ? 'selected' : '' }}>Triwulan I (Jan - Mar)</option>
+                            <option value="1" {{ (request('triwulan') == '1' || !request()->has('triwulan')) ? 'selected' : '' }}>Triwulan I (Jan - Mar)</option>
                             <option value="2" {{ request('triwulan') == '2' ? 'selected' : '' }}>Triwulan II (Apr - Jun)</option>
                             <option value="3" {{ request('triwulan') == '3' ? 'selected' : '' }}>Triwulan III (Jul - Sep)</option>
                             <option value="4" {{ request('triwulan') == '4' ? 'selected' : '' }}>Triwulan IV (Okt - Des)</option>
@@ -103,7 +103,7 @@
                     <div class="col-md-3">
                         <label class="form-label fw-bold small mb-1" style="color: #047857;">Pilih Tahun Rekap</label>
                         <select name="tahun" class="form-select form-select-custom text-dark fw-semibold fs-7" onchange="document.getElementById('filterForm').submit()">
-                            @for($y = date('Y'); $y >= 2020; $y--)
+                            @for($y = date('Y'); $y >= 2018; $y--)
                                 <option value="{{ $y }}" {{ $tahun == $y ? 'selected' : '' }}>Tahun {{ $y }}</option>
                             @endfor
                         </select>

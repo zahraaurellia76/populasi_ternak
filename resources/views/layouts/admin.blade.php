@@ -122,7 +122,7 @@
                     <li class="nav-item">
                         <a class="nav-link-custom {{ Request::is('admin-kecamatan/populasi*') ? 'active' : '' }}" 
                            href="{{ url('/admin-kecamatan/populasi') }}">
-                           Input Populasi
+                           Data Ternak
                         </a>
                     </li>
                     <li class="nav-item">

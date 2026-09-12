@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\JenisTernak;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class JenisTernakController extends Controller
 {
@@ -16,8 +17,17 @@ class JenisTernakController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_ternak' => 'required|string|max:255|unique:jenis_ternaks,nama_ternak',
-            'kategori'    => 'required|string|max:255',
+            'nama_ternak' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('jenis_ternaks')->where(function ($query) use ($request) {
+                    return $query->where('kategori', $request->kategori);
+                }),
+            ],
+            'kategori' => 'required|string|max:255',
+        ], [
+            'nama_ternak.unique' => 'Data jenis ternak sudah terdaftar!',
         ]);
 
         JenisTernak::create([
@@ -33,11 +43,20 @@ class JenisTernakController extends Controller
         $jenisTernak = JenisTernak::findOrFail($id);
 
         $request->validate([
-            'nama_ternak' => 'required|string|max:255|unique:jenis_ternaks,nama_ternak,'.$id,
-            'kategori'    => 'required|string|max:255',
+            'nama_ternak' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('jenis_ternaks')->ignore($id)->where(function ($query) use ($request) {
+                    return $query->where('kategori', $request->kategori);
+                }),
+            ],
+            'kategori' => 'required|string|max:255',
+        ], [
+            'nama_ternak.unique' => 'Data jenis ternak sudah terdaftar!',
         ]);
 
-        $jenisTernak->update([
+        $jenisTernak::update([
             'nama_ternak' => $request->nama_ternak,
             'kategori'    => $request->kategori,
         ]);

@@ -162,7 +162,7 @@
         </div>
         <div>
             <span class="badge rounded-pill bg-white text-dark shadow-sm px-3 py-2 border fw-semibold fs-7">
-                <i class="fa-solid fa-calendar-check text-success me-2"></i>Periode Laporan: <strong>Triwulan {{ $triwulanSelected ?? 'Semua' }} - {{ $tahunSelected }}</strong>
+                <i class="fa-solid fa-calendar-check text-success me-2"></i>Periode Laporan: <strong>Triwulan {{ $triwulanSelected ?? 1 }} - {{ $tahunSelected ?? date('Y') }}</strong>
             </span>
         </div>
     </div>
@@ -249,9 +249,8 @@
                             <i class="fa-solid fa-calendar-quarter me-1"></i>Pilih Triwulan
                         </label>
                         <select name="triwulan" class="form-select form-select-custom text-dark fw-semibold fs-7 py-2" onchange="this.form.submit()">
-                            <option value="">-- Semua Triwulan --</option>
                             @for($t = 1; $t <= 4; $t++)
-                                <option value="{{ $t }}" {{ (isset($triwulanSelected) && $triwulanSelected == $t) ? 'selected' : '' }}>
+                                <option value="{{ $t }}" {{ (($triwulanSelected ?? 1) == $t) ? 'selected' : '' }}>
                                     Triwulan {{ $t }}
                                 </option>
                             @endfor
@@ -264,16 +263,16 @@
                         </label>
                         <select name="tahun" class="form-select form-select-custom text-dark fw-semibold fs-7 py-2" onchange="this.form.submit()">
                             @for($t = date('Y'); $t >= 2018; $t--)
-                                <option value="{{ $t }}" {{ (isset($tahunSelected) && $tahunSelected == $t) ? 'selected' : '' }}>
+                                <option value="{{ $t }}" {{ (($tahunSelected ?? date('Y')) == $t) ? 'selected' : '' }}>
                                     Tahun {{ $t }}
                                 </option>
                             @endfor
                         </select>
                     </div>
 
-                    @if(!empty($triwulanSelected))
+                    @if(request()->has('triwulan') || request()->has('tahun'))
                         <div>
-                            <a href="{{ route('admin.kabupaten.rekapitulasi', ['tahun' => $tahunSelected]) }}" class="btn btn-outline-secondary btn-sm rounded-3 fw-semibold py-2">
+                            <a href="{{ route('admin.kabupaten.rekapitulasi') }}" class="btn btn-outline-secondary btn-sm rounded-3 fw-semibold py-2">
                                 <i class="fa-solid fa-rotate-left me-1"></i> Reset Filter
                             </a>
                         </div>
@@ -281,12 +280,12 @@
                 </form>
 
                 <div class="d-flex gap-2">
-                    <a href="{{ route('admin.kabupaten.rekapitulasi.pdf', ['tahun' => $tahunSelected, 'triwulan' => $triwulanSelected]) }}" 
+                    <a href="{{ route('admin.kabupaten.rekapitulasi.pdf', ['tahun' => $tahunSelected ?? date('Y'), 'triwulan' => $triwulanSelected ?? 1]) }}" 
                        class="btn btn-pdf-soft d-flex align-items-center gap-2 shadow-sm" target="_blank">
                         <i class="fa-solid fa-file-pdf fs-6"></i>
                         <span>Cetak PDF</span>
                     </a>
-                    <a href="{{ route('admin.kabupaten.rekapitulasi.excel', ['tahun' => $tahunSelected, 'triwulan' => $triwulanSelected]) }}" 
+                    <a href="{{ route('admin.kabupaten.rekapitulasi.excel', ['tahun' => $tahunSelected ?? date('Y'), 'triwulan' => $triwulanSelected ?? 1]) }}" 
                        class="btn btn-excel-soft d-flex align-items-center gap-2 shadow-sm">
                         <i class="fa-solid fa-file-excel fs-6"></i>
                         <span>Export Excel</span>

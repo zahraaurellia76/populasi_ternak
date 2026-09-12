@@ -26,6 +26,9 @@ class KecamatanController extends Controller
         $request->validate([
             'kode_kecamatan' => 'required|string|max:50|unique:kecamatans,kode_kecamatan',
             'nama_kecamatan' => 'required|string|max:255|unique:kecamatans,nama_kecamatan',
+        ], [
+            'kode_kecamatan.unique' => 'Data kecamatan sudah terdaftar!',
+            'nama_kecamatan.unique' => 'Data kecamatan sudah terdaftar!',
         ]);
 
         Kecamatan::create([
@@ -43,6 +46,9 @@ class KecamatanController extends Controller
         $request->validate([
             'kode_kecamatan' => 'required|string|max:50|unique:kecamatans,kode_kecamatan,'.$id,
             'nama_kecamatan' => 'required|string|max:255|unique:kecamatans,nama_kecamatan,'.$id,
+        ], [
+            'kode_kecamatan.unique' => 'Data kecamatan sudah terdaftar!',
+            'nama_kecamatan.unique' => 'Data kecamatan sudah terdaftar!',
         ]);
 
         $kecamatan->update([
@@ -71,16 +77,16 @@ class KecamatanController extends Controller
         $user = Auth::user();
         $jenisTernaks = JenisTernak::all();
 
-        // Ambil riwayat populasi berdasarkan kecamatan milik admin yang sedang login
+        // Ambil riwayat populasi dengan paginasi 10 data per halaman
         $populasiList = PopulasiKecamatan::with('jenisTernak')
             ->where('kecamatan_id', $user->kecamatan_id)
             ->orderBy('tahun', 'desc')
             ->orderBy('triwulan', 'desc')
-            ->get();
+            ->paginate(10);
 
         return view('admin.kecamatan.populasi', compact('jenisTernaks', 'populasiList'));
     }
-
+    
     public function storePopulasi(Request $request)
     {
         $request->validate([
@@ -136,31 +142,61 @@ class KecamatanController extends Controller
     {
         $user = Auth::user();
         $tahun = $request->get('tahun', date('Y'));
-        $triwulan = $request->get('triwulan', 1); // Default ke Triwulan I
+        
+        // Default ke triwulan 1 jika parameter triwulan belum ada sama sekali di URL
+        $triwulan = $request->has('triwulan') ? $request->get('triwulan') : '1';
 
-        // Ambil data populasi berdasarkan kecamatan, tahun, dan triwulan
-        $populasi = PopulasiKecamatan::with('jenisTernak')
+        $query = PopulasiKecamatan::with('jenisTernak')
             ->where('kecamatan_id', $user->kecamatan_id)
-            ->where('tahun', $tahun)
-            ->where('triwulan', $triwulan)
-            ->get();
+            ->where('tahun', $tahun);
 
+        if (!empty($triwulan)) {
+            $query->where('triwulan', $triwulan);
+        }
+
+        $populasi = $query->get();
         $jenisTernaks = JenisTernak::all();
 
         return view('admin.kecamatan.rekapitulasi', compact('populasi', 'jenisTernaks', 'tahun', 'triwulan'));
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $user = Auth::user();
+        $tahun = $request->get('tahun', date('Y'));
+        $triwulan = $request->has('triwulan') ? $request->get('triwulan') : '1';
+
+        $populasiQuery = PopulasiKecamatan::with('jenisTernak')
+            ->where('kecamatan_id', $user->kecamatan_id)
+            ->where('tahun', $tahun);
+
+        if (!empty($triwulan)) {
+            $populasiQuery->where('triwulan', $triwulan);
+        }
+
+        $populasi = $populasiQuery->get();
+        $jenisTernaks = JenisTernak::all();
+
+        $filename = "Rekapitulasi_Populasi_Ternak_{$tahun}_TW{$triwulan}.xls";
+
+        // Header untuk memaksa browser mendownload file sebagai Excel (.xls)
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+
+        return view('admin.kecamatan.rekapitulasi_excel', compact('populasi', 'jenisTernaks', 'tahun', 'triwulan', 'user'));
     }
 
     public function exportPdf(Request $request)
     {
         $user = Auth::user();
         $tahun = $request->get('tahun', date('Y'));
-        $triwulan = $request->get('triwulan');
+        $triwulan = $request->has('triwulan') ? $request->get('triwulan') : '1';
 
         $populasiQuery = PopulasiKecamatan::with('jenisTernak')
             ->where('kecamatan_id', $user->kecamatan_id)
             ->where('tahun', $tahun);
 
-        if ($triwulan) {
+        if (!empty($triwulan)) {
             $populasiQuery->where('triwulan', $triwulan);
         }
 
@@ -169,32 +205,7 @@ class KecamatanController extends Controller
 
         $pdf = Pdf::loadView('admin.kecamatan.rekapitulasi_pdf', compact('populasi', 'jenisTernaks', 'tahun', 'triwulan', 'user'));
         
-        return $pdf->stream('Rekapitulasi_Populasi_Ternak_'.$tahun.'.pdf');
-    }
-
-    public function exportExcel(Request $request)
-    {
-        $user = Auth::user();
-        $tahun = $request->get('tahun', date('Y'));
-        $triwulan = $request->get('triwulan');
-
-        $populasiQuery = PopulasiKecamatan::with('jenisTernak')
-            ->where('kecamatan_id', $user->kecamatan_id)
-            ->where('tahun', $tahun);
-
-        if ($triwulan) {
-            $populasiQuery->where('triwulan', $triwulan);
-        }
-
-        $populasi = $populasiQuery->get();
-        $jenisTernaks = JenisTernak::all();
-
-        $filename = "Rekapitulasi_Populasi_Ternak_{$tahun}.xls";
-
-        header("Content-Type: application/vnd.ms-excel");
-        header("Content-Disposition: attachment; filename=\"$filename\"");
-
-        return view('admin.kecamatan.rekapitulasi_pdf', compact('populasi', 'jenisTernaks', 'tahun', 'triwulan', 'user'));
+        return $pdf->stream('Rekapitulasi_Populasi_Ternak_'.$tahun.'_TW'.$triwulan.'.pdf');
     }
 
     public function prediksi(Request $request)

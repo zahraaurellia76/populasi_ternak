@@ -14,6 +14,9 @@ class PublicController extends Controller
         $kecamatans = Kecamatan::orderBy('id', 'asc')->get();
         $jenisTernaks = JenisTernak::all();
 
+        // Hitung total keseluruhan jenis ternak secara global dari database
+        $totalJenisTernakGlobal = JenisTernak::count();
+
         // 1. Tentukan Default Kecamatan "Mojo"
         $mojoKecamatan = Kecamatan::where('nama_kecamatan', 'LIKE', '%Mojo%')->first();
         $defaultKecamatanId = $mojoKecamatan ? $mojoKecamatan->id : $kecamatans->first()?->id;
@@ -40,11 +43,10 @@ class PublicController extends Controller
             $query->where('triwulan', $selectedTriwulan);
         }
 
-        // 4. Ambil data dengan paginasi
+        // 4. Ambil SEMUA data tanpa paginasi
         $populasi = $query->orderBy('tahun', 'desc')
             ->orderBy('triwulan', 'desc')
-            ->paginate(10)
-            ->withQueryString();
+            ->get();
 
         // 5. Olah data Grafik
         $chartLabels = [];
@@ -59,6 +61,7 @@ class PublicController extends Controller
             'populasi', 
             'kecamatans', 
             'jenisTernaks', 
+            'totalJenisTernakGlobal', // <-- Tambahkan di sini[cite: 8]
             'chartLabels', 
             'chartData', 
             'selectedKecamatanId',

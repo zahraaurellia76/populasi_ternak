@@ -16,7 +16,7 @@
     .table-custom thead th {
         background: linear-gradient(135deg, #10b981 0%, #047857 100%) !important;
         color: #ffffff !important;
-        font-size: 0.9rem !important; /* Font Judul Lebih Besar dari Isi */
+        font-size: 0.9rem !important;
         font-weight: 700 !important;
         text-transform: uppercase;
         letter-spacing: 0.05em;
@@ -27,7 +27,7 @@
 
     /* Isi Tabel (Font Lebih Kecil) */
     .table-custom tbody td {
-        font-size: 0.85rem !important; /* Font Isi Lebih Kecil */
+        font-size: 0.85rem !important;
         padding: 12px 16px !important;
         vertical-align: middle;
     }
@@ -115,57 +115,18 @@
         </div>
     @endif
 
-    <!-- Form Input Data Baru -->
-    <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white">
-        <div class="card-body p-4">
-            <h6 class="fw-bold mb-3" style="color: #047857;">
-                <i class="fa-solid fa-circle-plus me-1"></i> Tambah Data Populasi Baru
-            </h6>
-            <form action="{{ route('admin.kecamatan.populasi.store') }}" method="POST">
-                @csrf
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <label class="form-label small fw-bold" style="color: #047857;">Jenis Ternak</label>
-                        <select name="jenis_ternak_id" class="form-select form-select-custom text-dark fw-semibold fs-7" required>
-                            @foreach($jenisTernaks as $jt)
-                                <option value="{{ $jt->id }}">{{ $jt->nama_ternak }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label small fw-bold" style="color: #047857;">Tahun</label>
-                        <input type="number" name="tahun" class="form-control form-control-custom text-dark fw-semibold fs-7" value="{{ date('Y') }}" required>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label small fw-bold" style="color: #047857;">Triwulan</label>
-                        <select name="triwulan" class="form-select form-select-custom text-dark fw-semibold fs-7" required>
-                            <option value="1">Triwulan I (Jan - Mar)</option>
-                            <option value="2">Triwulan II (Apr - Jun)</option>
-                            <option value="3">Triwulan III (Jul - Sep)</option>
-                            <option value="4">Triwulan IV (Okt - Des)</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label small fw-bold" style="color: #047857;">Jumlah (Ekor)</label>
-                        <div class="input-group">
-                            <input type="number" name="jumlah" class="form-control form-control-custom text-dark fw-semibold fs-7" placeholder="Contoh: 1500" min="0" required>
-                            <button type="submit" class="btn btn-emerald fw-bold px-4 rounded-end-3">
-                                <i class="fa-solid fa-floppy-disk me-1"></i> Simpan
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
+    <!-- Header Tabel & Tombol Trigger Modal Tambah Data -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="fw-bold text-dark mb-0">
+            <i class="fa-solid fa-clock-rotate-left text-success me-2"></i>Riwayat Input Populasi
+        </h6>
+        <button type="button" class="btn btn-emerald fw-bold px-3 py-2 rounded-3 shadow-sm fs-7" data-bs-toggle="modal" data-bs-target="#tambahPopulasiModal">
+            <i class="fa-solid fa-circle-plus me-1"></i> Tambah Data Populasi
+        </button>
     </div>
 
     <!-- Tabel Data & Fitur CRUD -->
     <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
-        <div class="card-header bg-white border-0 py-3 px-4">
-            <h6 class="fw-bold text-dark mb-0">
-                <i class="fa-solid fa-clock-rotate-left text-success me-2"></i>Riwayat Input Populasi
-            </h6>
-        </div>
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover align-middle table-custom mb-0">
@@ -182,7 +143,7 @@
                         @forelse($populasiList as $item)
                             <tr>
                                 <td class="text-center fw-semibold text-secondary">
-                                    {{ $loop->iteration }}
+                                    {{ ($populasiList->currentPage() - 1) * $populasiList->perPage() + $loop->iteration }}
                                 </td>
                                 <td class="fw-bold text-dark px-3">
                                     {{ $item->jenisTernak->nama_ternak ?? '-' }}
@@ -209,65 +170,6 @@
                                     </div>
                                 </td>
                             </tr>
-
-                            <!-- Modal Edit -->
-                            <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-                                        <form action="{{ route('admin.kecamatan.populasi.update', $item->id) }}" method="POST">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="modal-header border-0 text-white p-4" style="background: linear-gradient(135deg, #10b981 0%, #047857 100%);">
-                                                <h5 class="modal-title fw-bold fs-6">
-                                                    <i class="fa-solid fa-pen-to-square me-2"></i>Edit Populasi - {{ $item->jenisTernak->nama_ternak }}
-                                                </h5>
-                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                            </div>
-                                            <div class="modal-body p-4 text-start">
-                                                <div class="p-3 bg-light rounded-3 mb-3 border">
-                                                    <span class="small text-muted d-block">Periode Terdaftar:</span>
-                                                    <strong class="text-dark">Triwulan {{ $item->triwulan }} - {{ $item->tahun }}</strong>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-semibold small text-muted">Jumlah (Ekor)</label>
-                                                    <input type="number" name="jumlah" class="form-control form-control-custom rounded-3 fw-bold text-dark" value="{{ $item->jumlah }}" min="0" required>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer border-0 pt-0 px-4 pb-4">
-                                                <button type="button" class="btn btn-light rounded-3 fw-semibold small" data-bs-dismiss="modal">Batal</button>
-                                                <button type="submit" class="btn btn-emerald rounded-3 fw-semibold small">Simpan Perubahan</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Modal Hapus -->
-                            <div class="modal fade" id="deleteModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-                                        <form action="{{ route('admin.kecamatan.populasi.destroy', $item->id) }}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <div class="modal-header border-0 bg-danger text-white p-4">
-                                                <h5 class="modal-title fw-bold fs-6">
-                                                    <i class="fa-solid fa-triangle-exclamation me-2"></i>Konfirmasi Hapus
-                                                </h5>
-                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                            </div>
-                                            <div class="modal-body p-4 text-start">
-                                                <p class="mb-0 text-secondary">
-                                                    Apakah Anda yakin ingin menghapus data populasi <strong>{{ $item->jenisTernak->nama_ternak }}</strong> periode <strong>Triwulan {{ $item->triwulan }} - {{ $item->tahun }}</strong>?
-                                                </p>
-                                            </div>
-                                            <div class="modal-footer border-0 pt-0 px-4 pb-4">
-                                                <button type="button" class="btn btn-light rounded-3 fw-semibold small" data-bs-dismiss="modal">Batal</button>
-                                                <button type="submit" class="btn btn-danger rounded-3 fw-semibold small">Hapus Data</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
                         @empty
                             <tr>
                                 <td colspan="5" class="text-center py-5 text-muted bg-white">
@@ -279,6 +181,130 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+        
+        <!-- Paginasi -->
+        <div class="card-footer bg-white border-0 py-3 px-4 d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div class="small text-muted">
+                Menampilkan data ke {{ $populasiList->firstItem() ?? 0 }} sampai {{ $populasiList->lastItem() ?? 0 }} dari total {{ $populasiList->total() }} data
+            </div>
+            <div>
+                {{ $populasiList->links() }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= MODAL-MODAL (Diletakkan di luar tabel/card agar struktur HTML valid) ================= -->
+
+@foreach($populasiList as $item)
+    <!-- Modal Edit -->
+    <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+                <form action="{{ route('admin.kecamatan.populasi.update', $item->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-header border-0 text-white p-4" style="background: linear-gradient(135deg, #10b981 0%, #047857 100%);">
+                        <h5 class="modal-title fw-bold fs-6">
+                            <i class="fa-solid fa-pen-to-square me-2"></i>Edit Populasi - {{ $item->jenisTernak->nama_ternak ?? '' }}
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4 text-start">
+                        <div class="p-3 bg-light rounded-3 mb-3 border">
+                            <span class="small text-muted d-block">Periode Terdaftar:</span>
+                            <strong class="text-dark">Triwulan {{ $item->triwulan }} - {{ $item->tahun }}</strong>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small text-muted">Jumlah (Ekor)</label>
+                            <input type="number" name="jumlah" class="form-control form-control-custom rounded-3 fw-bold text-dark" value="{{ $item->jumlah }}" min="0" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 pt-0 px-4 pb-4">
+                        <button type="button" class="btn btn-light rounded-3 fw-semibold small" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-emerald rounded-3 fw-semibold small">Simpan Perubahan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Hapus -->
+    <div class="modal fade" id="deleteModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+                <form action="{{ route('admin.kecamatan.populasi.destroy', $item->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <div class="modal-header border-0 bg-danger text-white p-4">
+                        <h5 class="modal-title fw-bold fs-6">
+                            <i class="fa-solid fa-triangle-exclamation me-2"></i>Konfirmasi Hapus
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4 text-start">
+                        <p class="mb-0 text-secondary">
+                            Apakah Anda yakin ingin menghapus data populasi <strong>{{ $item->jenisTernak->nama_ternak ?? '' }}</strong> periode <strong>Triwulan {{ $item->triwulan }} - {{ $item->tahun }}</strong>?
+                        </p>
+                    </div>
+                    <div class="modal-footer border-0 pt-0 px-4 pb-4">
+                        <button type="button" class="btn btn-light rounded-3 fw-semibold small" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-danger rounded-3 fw-semibold small">Hapus Data</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endforeach
+
+<!-- Modal Tambah Data Populasi -->
+<div class="modal fade" id="tambahPopulasiModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <form action="{{ route('admin.kecamatan.populasi.store') }}" method="POST">
+                @csrf
+                <div class="modal-header border-0 text-white p-4" style="background: linear-gradient(135deg, #10b981 0%, #047857 100%);">
+                    <h5 class="modal-title fw-bold fs-6">
+                        <i class="fa-solid fa-circle-plus me-2"></i>Tambah Data Populasi Baru
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4 text-start">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold" style="color: #047857;">Jenis Ternak</label>
+                        <select name="jenis_ternak_id" class="form-select form-select-custom text-dark fw-semibold fs-7" required>
+                            <option value="" disabled selected>Pilih Jenis Ternak</option>
+                            @foreach($jenisTernaks as $jt)
+                                <option value="{{ $jt->id }}">{{ $jt->nama_ternak }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold" style="color: #047857;">Tahun</label>
+                        <input type="number" name="tahun" class="form-control form-control-custom text-dark fw-semibold fs-7" value="{{ date('Y') }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold" style="color: #047857;">Triwulan</label>
+                        <select name="triwulan" class="form-select form-select-custom text-dark fw-semibold fs-7" required>
+                            <option value="1">Triwulan I (Jan - Mar)</option>
+                            <option value="2">Triwulan II (Apr - Jun)</option>
+                            <option value="3">Triwulan III (Jul - Sep)</option>
+                            <option value="4">Triwulan IV (Okt - Des)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold" style="color: #047857;">Jumlah (Ekor)</label>
+                        <input type="number" name="jumlah" class="form-control form-control-custom text-dark fw-semibold fs-7" placeholder="Contoh: 1500" min="0" required>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0 px-4 pb-4">
+                    <button type="button" class="btn btn-light rounded-3 fw-semibold small" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-emerald rounded-3 fw-semibold small">
+                        <i class="fa-solid fa-floppy-disk me-1"></i> Simpan Data
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

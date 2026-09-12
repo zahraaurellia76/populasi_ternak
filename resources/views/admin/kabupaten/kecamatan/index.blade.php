@@ -106,10 +106,26 @@
         </button>
     </div>
 
-    <!-- Alert Notifikasi -->
+    <!-- Alert Notifikasi Success -->
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show rounded-3 border-0 shadow-sm mb-4" role="alert" style="background-color: #dcfce7; color: #15803d;">
             <i class="fa-solid fa-circle-check me-2"></i> {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    <!-- Alert Notifikasi Error (Gunakan $errors->any()) -->
+    @if($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show rounded-3 border-0 shadow-sm mb-4" role="alert" style="background-color: #fee2e2; color: #991b1b;">
+            <i class="fa-solid fa-circle-exclamation me-2"></i> {{ $errors->first() }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    <!-- Alert Notifikasi Session Error (Opsional, untuk session manual) -->
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show rounded-3 border-0 shadow-sm mb-4" role="alert" style="background-color: #fee2e2; color: #991b1b;">
+            <i class="fa-solid fa-circle-exclamation me-2"></i> {{ session('error') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif

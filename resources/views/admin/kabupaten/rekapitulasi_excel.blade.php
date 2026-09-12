@@ -1,4 +1,4 @@
-<html xmlns:o="urn:schemas-microsoft-com:office:office" 
+<html xmlns:o="urn:schemas-microsoft-com:office:excel" 
       xmlns:x="urn:schemas-microsoft-com:office:excel" 
       xmlns="http://www.w3.org/TR/REC-html40">
 <head>
@@ -55,6 +55,7 @@
         .td-total { 
             background-color: #d1e7dd; 
             font-weight: bold; 
+            font-size: 7.5pt; /* Menyesuaikan ukuran font kolom Jumlah ke 7.5pt */
         }
     </style>
 </head>
@@ -76,11 +77,12 @@
             <tr style="height: 10px;">
                 <td colspan="{{ count($jenisTernaks) + 2 }}" style="border: none;"></td>
             </tr>
-            <tr style="height: 28px;">
+            <!-- Baris ke-4: height diperbesar dari 28px menjadi 45px -->
+            <tr style="height: 45px;">
                 <th class="th-header" style="width: 25px;">No</th>
                 <th class="th-header" style="width: 110px;">Nama Kecamatan</th>
                 @foreach($jenisTernaks as $jt)
-                    <th class="th-header" style="width: 55px;">{{ $jt->nama_ternak }}</th>
+                    <th class="th-header" style="width: 68px;">{{ $jt->nama_ternak }}</th>
                 @endforeach
             </tr>
         </thead>
@@ -91,7 +93,7 @@
             
             @foreach($rekap as $index => $kc)
                 <tr style="height: 20px;">
-                    <td style="text-align: center;">{{ $loop->iteration }}</td>
+                    <td style="text-align: center; font-size: 7.5pt; font-weight: normal;">{{ $loop->iteration }}</td>
                     <td style="font-size: 7.5pt;">{{ strtoupper($kc->nama_kecamatan) }}</td>
                     @foreach($jenisTernaks as $jt)
                         @php
@@ -105,7 +107,8 @@
         </tbody>
         <tfoot>
             <tr style="height: 22px;">
-                <td colspan="2" class="td-total" style="text-align: center;">TOTAL KABUPATEN KEDIRI</td>
+                <!-- Kolom Jumlah diset berukuran 7.5pt -->
+                <td colspan="2" class="td-total" style="text-align: center; font-size: 7.5pt;">Jumlah</td>
                 @foreach($jenisTernaks as $jt)
                     <td class="td-total" style="text-align: right; font-size: 7.5pt; mso-number-format:'\#\,\#\#0';">
                         {{ $grandTotals[$jt->id] ?? 0 }}

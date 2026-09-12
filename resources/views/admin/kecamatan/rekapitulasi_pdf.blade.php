@@ -17,8 +17,9 @@
     <div class="text-center">
         <h2 style="margin-bottom: 5px;">REKAPITULASI DATA POPULASI TERNAK</h2>
         <p style="margin-top: 0;">
+            Kecamatan: <strong>{{ $user->kecamatan->nama_kecamatan ?? '-' }}</strong> | 
             Tahun: <strong>{{ $tahun }}</strong> | 
-            Triwulan: <strong>{{ $triwulan ? 'Triwulan '.$triwulan : 'Semua Triwulan' }}</strong>
+            Triwulan: <strong>{{ 'Triwulan '.$triwulan }}</strong>
         </p>
     </div>
 
